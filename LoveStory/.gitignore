@@ -6,3 +6,4 @@
 *.mkv
 output/*
 !output/.gitkeep
+__pycache__/

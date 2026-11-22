@@ -25,6 +25,8 @@ import tempfile
 import textwrap
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 ROOT = Path(__file__).resolve().parent.parent
 SHOTS = ROOT / "scenes" / "shots.csv"
 TOKENS = ROOT / "scenes" / "tokens.json"
@@ -37,6 +39,8 @@ OUT = ROOT / "output"
 FPS = 24
 FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 TITLE_FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf"
+# Видеосыз, генерацияланатын кадрлар: black (қара фон + жазу), dawn (таң атау анимациясы)
+SYNTHETIC = {"black", "dawn"}
 
 GRADES = {
     "warm": "colorbalance=rs=0.04:bs=-0.04:rm=0.03:bm=-0.03,eq=saturation=1.06:contrast=1.03",
@@ -183,6 +187,15 @@ def render_segments(shots, tmp, w, h, preset, grade):
     for i, s in enumerate(shots):
         frames = round(s["dur"] * FPS)
         seg = tmp / f"{i:03d}.mp4"
+        if s["look"] == "dawn":
+            # Атау анимациясы: tools/title_anim.py (таң атады, әріптер бірінен соң бірі)
+            import title_anim
+            title_anim.render(seg, w, h, frames / FPS, s.get("text") or title_anim.DEFAULT_TEXT,
+                              preset, fade_in=1.5 if i == 0 else 0.0,
+                              fade_out=1.2 if i == len(shots) - 1 else 0.0)
+            parts.append(seg)
+            print(f"\r{i + 1}/{len(shots)} кадр", end="", flush=True)
+            continue
         focus = float(s.get("focus") or 0.5)
         vf = [f"scale={w}:{h}:force_original_aspect_ratio=increase",
               f"crop={w}:{h}:(iw-{w})*{focus}:(ih-{h})/2",
@@ -278,7 +291,7 @@ def load_mood():
     t, shots = 0.0, []
     for r in rows:
         base = by_id.get(r["id"])
-        if base is None and r["look"] != "black":
+        if base is None and r["look"] not in SYNTHETIC:
             sys.exit(f"moodfilm.csv: {r['id']} кадры shots.csv-да жоқ")
         s = {"id": r["id"], "section": base["section"] if base else "",
              "lyric": base["lyric"] if base else "", "scene_kk": base["scene_kk"] if base else "",
@@ -296,7 +309,7 @@ def cmd_mood(args):
     total = shots[-1]["start"] + shots[-1]["dur"]
     print(f"Мудфильм: {len(shots)} кадр, {fmt(total)}, ән {fmt(audio_start)}–"
           f"{fmt(audio_start + total)} аралығынан")
-    missing = [s["id"] for s in shots if s["look"] != "black" and not s["file"].exists()]
+    missing = [s["id"] for s in shots if s["look"] not in SYNTHETIC and not s["file"].exists()]
     if missing:
         print("Видеосы жоқ (сұр экран қойылады): " + ", ".join(missing))
     if args.snap:
