@@ -6,6 +6,7 @@
 yt-output/<канал>/<видео>/
 ├── storyboard.md                      раскадровка (в git)
 ├── qa.md                              проверка качества (в git)
+├── credits.txt                        титры для описания YouTube (в git)
 ├── <видео>_short_preview.mp4          черновик 540p (НЕ в git)
 ├── <видео>_short_storyboard.jpg       контактный лист (НЕ в git)
 ├── layout_shorts_1080x1920.png        расположение текста (НЕ в git)

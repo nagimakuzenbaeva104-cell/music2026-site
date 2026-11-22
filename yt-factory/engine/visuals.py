@@ -19,7 +19,22 @@ def scene_clip(scene, idx, length, w, h, fps, brand, assets_dir, out, fast=False
     move = scene.get("move", "in")  # in | out | left | right
     if asset:
         src = assets_dir / asset
-        if src.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp"):
+        fit = (scene.get("shot") or {}).get("fit", "cover")
+        if src.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp") and fit == "contain":
+            # архивное/малое фото: в рамке поверх размытой копии, медленный наезд.
+            # Рамка — в полосе 12–55% высоты, НАД субтитрами (57–72%): текст не ложится на лицо.
+            frames = int(length * fps) + 1
+            bw, bh = int(w * 0.82) // 2 * 2, int(h * 0.43) // 2 * 2
+            vf = (f"[0:v]scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h},"
+                  f"boxblur=24:2,eq=brightness=-0.18:saturation=0.7[bg];"
+                  f"[0:v]scale={bw}:{bh}:force_original_aspect_ratio=decrease,"
+                  f"pad=iw+12:ih+12:6:6:color=0xF2E6C8[fg];"
+                  f"[bg][fg]overlay=(W-w)/2:{int(h * 0.12)}+({bh}-h)/2,"
+                  f"zoompan=z='1+0.05*on/{frames}':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':"
+                  f"d={frames}:s={w}x{h}:fps={fps},{GRADE},{grain(fps)}")
+            cmd = ["ffmpeg", "-y", "-v", "error", "-loop", "1", "-i", src,
+                   "-t", f"{length:.3f}", "-filter_complex", vf]
+        elif src.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp"):
             frames = int(length * fps) + 1
             z = {"in": f"1+0.10*on/{frames}", "out": f"1.10-0.10*on/{frames}"}.get(move, "1.08")
             x = {"left": f"(iw-iw/zoom)*(1-on/{frames})",

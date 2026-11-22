@@ -1,11 +1,17 @@
-# Пилот Future Million — английская версия. Shorts 9:16 (1080×1920), цель 25 с.
-# Перевод русского сценария без изменения фактов (русская версия — в истории git).
+# Future Million — «How Jeff Bezos Built Amazon». Shorts 9:16 (1080×1920), цель 25 с.
+# Английская версия; текст и факты не менялись с одобренной раскадровки.
 # text  — текст на экране; [в скобках] = ключевые слова (золото #FFD700)
 # say   — как читает диктор (числа словами)
 # hero  — крупное фоновое слово/цифра сцены (только факт из текста)
-# asset — файл из assets/ (ваш клип или фото). Без него — фирменный градиент.
+# shot  — какой кадр нужен, откуда, лицензия. Движок ищет shot.file в assets/.
+#   kind:    archival (реальный исторический/документальный) | illustration (тематический) | graphic
+#   license_status: verified-search (лицензия прочитана в выдержке страницы через поиск —
+#            перед скачиванием откройте страницу и подтвердите) | to-verify (лицензию не удалось
+#            прочитать — НЕ использовать, пока не проверите) | n/a
+#   fit:     cover (на весь экран) | contain (фото в рамке на размытом фоне — для малых/архивных фото)
+#   caption: подпись в кадре (год + автор) — чтобы архивное фото не выдавалось за другой год
 channel: future-million
-title: "Amazon started in a garage"
+title: "How Jeff Bezos Built Amazon"
 language: en
 format: short
 target_seconds: 25
@@ -13,63 +19,153 @@ approved: false          # финальный рендер — только по
 
 scenes:
   - id: 1
+    name: "Уход с Уолл-стрит (1994)"
     text: "In 1994, [Jeff Bezos] quit his job as a vice president on [Wall Street]."
     say: "In nineteen ninety-four, Jeff Bezos quit his job as a vice president on Wall Street."
     hero: "1994"
-    visual: "Ночной Манхэттен, окна офисных башен"
-    asset_hint: "manhattan night office"
+    visual: "Настоящее фото Джеффа Безоса (самое раннее со свободной лицензией — 2004 г.)"
     transition: fade
     source: "D. E. Shaw & Co. — фирма с Уолл-стрит; Безос был вице-президентом (historyofinformation.com)"
+    shot:
+      file: s01.jpg
+      kind: archival
+      find: "Фото: Джефф Безос отвечает на вопрос репортёра Wired, конференция Web 2.0, 5 октября 2004"
+      page: "https://commons.wikimedia.org/wiki/File:Jeff_Bezos_(153327607).jpg"
+      author: "JD Lasica (Flickr: jdlasica)"
+      license: "CC BY 2.0"
+      license_status: verified-search
+      caption: "Jeff Bezos, 2004 · Photo: JD Lasica, CC BY 2.0"
+      fit: contain
+      note: "Разрешение всего 500×667 — только в рамке (contain), не на весь экран. Фото 2004 г., не 1994 — подпись с годом обязательна."
+      alt:
+        find: "Иллюстрация: табличка Wall St / фасады Нижнего Манхэттена, без узнаваемых людей"
+        where: "https://www.pexels.com/search/videos/wall%20street/"
+        license: "Pexels License"
 
   - id: 2
+    name: "Гараж в Белвью"
     text: "And started a company in a [garage] in Bellevue."
     hero: "GARAGE"
-    visual: "Пригородный гараж, тёплый свет лампы"
-    asset_hint: "suburban garage night light"
+    visual: "Настоящий гараж дома 10704 NE 28th St, Белвью, где была основана Amazon"
     transition: smoothleft
     source: "Основана 5 июля 1994, гараж в Белвью, штат Вашингтон (history.com)"
+    shot:
+      file: s02.jpg
+      kind: archival
+      find: "Фото гаража, где Безос основал Amazon в 1994 (снято в 2024)"
+      page: "https://commons.wikimedia.org/wiki/File:Amazon%27s_founding_site_in_Bellevue,_Washington_-_garage.jpg"
+      author: "SounderBruce (Wikimedia Commons)"
+      license: "не прочитана (вероятно CC BY-SA 4.0, как у соседнего файла того же автора)"
+      license_status: to-verify
+      caption: "Bellevue, WA · Photo (2024): SounderBruce, Wikimedia Commons"
+      fit: cover
+      note: "Современное фото реального места, не 1994 год. Лицензию открыть на странице файла."
+      alt:
+        find: "Иллюстрация: пригородный гараж с тёплым светом"
+        where: "https://www.pexels.com/search/videos/garage/"
+        license: "Pexels License"
 
   - id: 3
+    name: "Cadabra → cadaver"
     text: "At first it was called [Cadabra]. But a lawyer heard [“cadaver”] — a corpse."
     say: "At first it was called Cadabra. But a lawyer heard: cadaver. A corpse."   # двоеточие/точка = чёткая пауза (проверено Whisper)
     hero: "CADABRA"
-    visual: "Старые документы о регистрации, печатная машинка"
-    asset_hint: "old documents typewriter"
+    visual: "Иллюстрация: юридические документы / печатная машинка (архивных кадров регистрации Cadabra со свободной лицензией не найдено)"
     transition: fadeblack
     source: "Cadabra, Inc.; юрист услышал «cadaver» (history.com)"
+    shot:
+      file: s03.mp4
+      kind: illustration
+      find: "Видео: крупный план документов/печатной машинки, тёплый свет, медленное движение"
+      where: "https://www.pexels.com/search/videos/typewriter/ · https://www.pexels.com/search/videos/legal%20documents/"
+      license: "Pexels License (атрибуция не обязательна)"
+      license_status: n/a
+      caption: null
+      fit: cover
+      note: "Не подделывать документы с надписью Cadabra — это выдумка, а не архив."
 
   - id: 4
+    name: "Рождение Amazon — книжный онлайн-магазин"
     text: "The name was changed — and [Amazon] was born, an online [bookstore]."
     say: "The name was changed, and Amazon was born, an online bookstore."
     hero: "AMAZON"
-    visual: "Стопки книг, картонные коробки"
-    asset_hint: "stack of books cardboard boxes"
+    visual: "Исторический логотип Amazon.com (использовался 2000–2012) на тёмном фоне"
     transition: smoothup
     source: "Переименование через несколько месяцев; продажа книг онлайн (history.com)"
+    shot:
+      file: s04.png
+      kind: archival
+      find: "Логотип Amazon.com 2000–2012 (PNG-версия файла с Commons, ширина ≥ 1600 px)"
+      page: "https://commons.wikimedia.org/wiki/File:Amazon.com-Logo.svg"
+      author: "Amazon.com, Inc. (товарный знак)"
+      license: "Public domain — PD-textlogo (простой текстовый логотип); остаётся товарным знаком"
+      license_status: verified-search
+      caption: "Amazon.com logo, 2000–2012"
+      fit: contain
+      note: "Логотип не 1995 года — подпись с годами обязательна. Товарный знак: не создавать впечатление, что видео от Amazon."
+      alt:
+        find: "Иллюстрация: стопки книг / книжные полки"
+        where: "https://www.pexels.com/search/videos/books/"
+        license: "Pexels License"
 
   - id: 5
+    name: "IPO 1997 — $18 за акцию"
     text: "In 1997, Amazon went public at [$18] a share."
     say: "In nineteen ninety-seven, Amazon went public at eighteen dollars a share."
     hero: "$18"
-    visual: "Биржевое табло, бегущие котировки"
-    asset_hint: "stock market ticker board"
+    visual: "Nasdaq MarketSite, Таймс-сквер (биржа, на которой торгуется AMZN; здание открыто в 2000 г.)"
     transition: fade
     source: "IPO 15 мая 1997, $18 за акцию, NASDAQ: AMZN (CNN Money, 15.05.1997)"
+    shot:
+      file: s05.jpg
+      kind: illustration
+      find: "Фото фасада Nasdaq MarketSite (файл «NASDAQ Market Site 201506.jpg»)"
+      page: "https://commons.wikimedia.org/wiki/File:NASDAQ_Market_Site_201506.jpg"
+      author: "не прочитан"
+      license: "не прочитана"
+      license_status: to-verify
+      caption: "Nasdaq MarketSite, 2015 · Wikimedia Commons"
+      fit: cover
+      note: "Кадров самого IPO 1997 со свободной лицензией нет (только Getty Images, платно). Не выдавать за 1997 год."
+      alt:
+        find: "Иллюстрация: бегущая строка котировок / биржевой график"
+        where: "https://www.pexels.com/search/videos/stock%20market/"
+        license: "Pexels License"
 
   - id: 6
+    name: "Четыре сплита — ×240"
     text: "After four stock splits, each of those shares became [240]."
     say: "After four stock splits, each of those shares became two hundred forty."
     hero: "×240"
-    visual: "График роста (моушн-графика)"
-    asset_hint: "rising chart animation"
+    visual: "Графика движка: крупное ×240 (данные: 2:1, 3:1, 2:1, 20:1)"
     transition: zoomin
     source: "4 сплита: 2:1 (1998), 3:1 (1999), 2:1 (1999), 20:1 (2022) = ×240 (The Motley Fool)"
+    shot:
+      file: null
+      kind: graphic
+      find: "Ничего искать не нужно — фон и цифру рисует движок"
+      license_status: n/a
 
   - id: 7
+    name: "Всё началось с гаража"
     text: "It all started in a [garage]."
-    visual: "Возврат к гаражу, медленный отъезд камеры"
-    asset_hint: "garage door closing"
+    visual: "Дом в Белвью, где была основана Amazon, снаружи"
     transition: fadeblack
+    shot:
+      file: s07.jpg
+      kind: archival
+      find: "Фото дома 10704 NE 28th St, Белвью — первая штаб-квартира Amazon (снято в 2024)"
+      page: "https://commons.wikimedia.org/wiki/File:Amazon%27s_founding_site_in_Bellevue,_Washington_-_exterior.jpg"
+      author: "SounderBruce (Wikimedia Commons)"
+      license: "CC BY-SA 4.0"
+      license_status: verified-search
+      caption: "Amazon's first home, Bellevue · Photo (2024): SounderBruce, CC BY-SA 4.0"
+      fit: cover
+      note: "BY-SA требует указать автора и лицензию; вопрос, распространяется ли share-alike на видео, юридически спорный — при сомнении используйте альтернативу."
+      alt:
+        find: "Иллюстрация: закрывающаяся дверь гаража, вечер"
+        where: "https://www.pexels.com/search/videos/garage%20door/"
+        license: "Pexels License"
 
 sources:
   - "https://www.history.com/this-day-in-history/july-5/amazon-is-founded-by-jeff-bezos"

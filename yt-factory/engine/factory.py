@@ -33,7 +33,11 @@ ASSET_EXT = (".mp4", ".mov", ".webm", ".jpg", ".jpeg", ".png", ".webp")
 
 
 def find_asset(project_dir, scene, idx):
-    """Явный asset из scenes.yaml или файл assets/sNN.* (NN = id сцены)."""
+    """shot.file / asset из scenes.yaml или файл assets/sNN.* (NN = id сцены)."""
+    shot = scene.get("shot") or {}
+    if shot.get("file"):
+        f = project_dir / "assets" / shot["file"]
+        return shot["file"] if f.exists() else None
     if scene.get("asset"):
         if not (project_dir / "assets" / scene["asset"]).exists():
             raise FactoryError(f"Сцена {idx}: нет файла assets/{scene['asset']}")
@@ -44,6 +48,41 @@ def find_asset(project_dir, scene, idx):
         if f.exists():
             return f.name
     return None
+
+
+def check_licenses(project_dir, proj):
+    """Финал запрещён, если в кадре есть файл с непроверенной лицензией."""
+    bad = []
+    for i, s in enumerate(proj["scenes"], 1):
+        shot = s.get("shot") or {}
+        if find_asset(project_dir, s, i) and shot.get("license_status", "verified") not in ("verified", "n/a"):
+            bad.append(f"сцена {s.get('id', i)} ({shot.get('file')})")
+    if bad:
+        raise FactoryError("Финальный рендер заблокирован: лицензия не подтверждена — "
+                           + ", ".join(bad) + ". Проверьте страницу источника и поменяйте "
+                           "license_status на verified (или уберите файл). Выдержка из поиска — не проверка.")
+
+
+def write_credits(proj, tl, out_dir):
+    """Титры для описания YouTube: автор, лицензия, ссылка — для каждого использованного кадра."""
+    lines = [f"{proj.get('title')} — sources & credits", ""]
+    used = [s for s in tl["scenes"] if s["asset"] and s["shot"]]
+    for s in used:
+        sh = s["shot"]
+        src = sh.get("page") or sh.get("where") or ""
+        lines.append(f"Scene {s['id']}: {sh.get('find', '')}".strip())
+        if sh.get("author"):
+            lines.append(f"  Author: {sh['author']}")
+        if sh.get("license"):
+            lines.append(f"  License: {sh['license']}")
+        if src:
+            lines.append(f"  Source: {src}")
+        lines.append("")
+    if not used:
+        lines.append("(кадры ещё не загружены — титры появятся после добавления файлов в assets/)")
+        lines.append("")
+    lines += ["Facts:"] + [f"  {x}" for x in proj.get("sources", [])]
+    (out_dir / "credits.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def merge_fast(chunks, speech_end, sb):
@@ -127,6 +166,7 @@ def build_timeline(project_dir, proj, brand, fmt):
             "speech": round(speech, 3), "wav": str(wav), "say": say, "text": s["text"],
             "hero": s.get("hero"), "visual": s.get("visual", ""),
             "asset": find_asset(project_dir, s, i), "asset_hint": s.get("asset_hint"),
+            "shot": s.get("shot") or {}, "name": s.get("name", ""),
             "transition": s.get("transition", brand["transitions"]["default"]),
             "chunks": out_chunks, "align": method, "source": s.get("source"),
         })
@@ -262,6 +302,8 @@ def main(argv=None):
         if a.cmd == "final" and not proj.get("approved"):
             raise FactoryError("Финальный рендер заблокирован: в scenes.yaml нет approved: true. "
                                "Сначала одобрите раскадровку и превью.")
+        if a.cmd == "final":
+            check_licenses(project_dir, proj)
         print(f"▶ {proj.get('title')} [{fmt}] — озвучка и тайминг ...")
         tl = build_timeline(project_dir, proj, brand, fmt)
         build = project_dir / "build"
@@ -272,6 +314,7 @@ def main(argv=None):
         music = music_file(project_dir, brand)
         write_storyboard(project_dir, proj, brand, tl, out_dir, music)
         shotlist.write(project_dir, proj, brand, tl)
+        write_credits(proj, tl, out_dir)
         print(f"  раскадровка: {out_dir / 'storyboard.md'} · {tl['total']:.1f} с")
         print(f"  список кадров: {project_dir / 'assets' / 'README.md'}")
         if a.cmd in ("preview", "final"):

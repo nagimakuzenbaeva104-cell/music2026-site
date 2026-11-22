@@ -39,6 +39,8 @@ def build_ass(timeline, brand, fmt, w, h):
         "BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding",
         f"Style: Sub,{f['family']},{size},{white},{white},{outline},&H96000000,"
         f"0,0,0,0,100,100,0,0,1,{sb['outline']},3,5,{margin},{margin},0,1",
+        f"Style: Caption,{f['family']},{max(size // 4, 26)},&H30FFFFFF,&H30FFFFFF,&H00000000,"
+        f"&H80000000,0,0,0,0,100,100,0,0,1,2,0,7,{margin},{margin},0,1",
         f"Style: Hero,{f['hero_family']},{hsize},{hero_col},{hero_col},&HFF000000,&HFF000000,"
         f"0,0,0,0,100,100,-4,0,1,0,0,5,40,40,0,1",
         "", "[Events]",
@@ -46,7 +48,8 @@ def build_ass(timeline, brand, fmt, w, h):
     ]
     alpha = f"&H{int(hb['alpha'] * 255):02X}&"
     for sc in timeline["scenes"]:
-        if sc.get("hero"):
+        framed = sc.get("asset") and (sc.get("shot") or {}).get("fit") == "contain"
+        if sc.get("hero") and not framed:   # над фото в рамке hero не рисуем — не закрываем лицо
             # автоподбор: слово занимает не больше 86% ширины кадра
             # (средняя ширина знака Inter Black ≈ 0.66 кегля, учитываем финальный масштаб 106%)
             fs = min(hsize, int(w * 0.86 / (0.66 * len(sc["hero"]) * 1.06)))
@@ -55,6 +58,10 @@ def build_ass(timeline, brand, fmt, w, h):
                 f"Dialogue: 0,{ts(sc['start'])},{ts(sc['end'])},Hero,,0,0,0,,"
                 f"{{\\pos({cx},{hy})\\fs{fs}\\alpha{alpha}\\blur2\\fad(350,300)"
                 f"\\fscx96\\fscy96\\t(0,{dur_ms},\\fscx106\\fscy106)}}{esc(sc['hero'])}")
+        cap = (sc.get("shot") or {}).get("caption") if sc.get("asset") else None
+        if cap:  # подпись источника: слева сверху под зоной поиска YouTube
+            lines.append(f"Dialogue: 2,{ts(sc['start'])},{ts(sc['end'])},Caption,,0,0,0,,"
+                         f"{{\\pos({margin},{int(h * 0.085)})\\fad(300,200)}}{esc(cap)}")
         for ch in sc["chunks"]:
             words = []
             for wd in ch["words"]:
