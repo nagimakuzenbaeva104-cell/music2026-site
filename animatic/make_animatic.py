@@ -1640,6 +1640,58 @@ SHOTS = [
 
 
 # =====================================================================
+#  VOICES (Piper TTS, offline)
+# =====================================================================
+VOICE_DIR = os.environ.get("PIPER_VOICES", os.path.join(os.path.dirname(os.path.abspath(__file__)), "voices"))
+CAST = {  # speaker prefix -> (model, length_scale, pitch_factor, gain)
+    "АЛИНА": ("ru_RU-irina-medium", 1.0, 1.0, 1.0),
+    "ЛИЗА": ("ru_RU-irina-medium", 1.0, 1.0, 1.0),
+    "СТЕПАН": ("ru_RU-dmitri-medium", 1.12, 0.96, 1.0),
+    "ВАРВАРА": ("ru_RU-irina-medium", 1.0, 0.88, 0.95),
+}
+
+
+def tts_clean(s):
+    for ch in "«»„“\"":
+        s = s.replace(ch, "")
+    return s.replace("—", ",").replace("…", ".").strip()
+
+
+def synth_voices(cache):
+    import hashlib
+    from piper import PiperVoice, SynthesisConfig
+    os.makedirs(cache, exist_ok=True)
+    loaded = {}
+    for sh in SHOTS:
+        for c in sh.get("cues", []):
+            if c["kind"] != "dlg":
+                continue
+            key = next(k for k in CAST if c["who"].startswith(k))
+            model, ls, pitch, gain = CAST[key]
+            note = c.get("note", "")
+            if "губами" in note or "шёпот" in note or "беззвучно" in note:
+                gain *= 0.55
+            txt = tts_clean(c["text"])
+            h = hashlib.md5(f"{model}|{ls}|{txt}".encode()).hexdigest()[:12]
+            path = os.path.join(cache, h + ".wav")
+            if not os.path.exists(path):
+                if model not in loaded:
+                    loaded[model] = PiperVoice.load(os.path.join(VOICE_DIR, model + ".onnx"))
+                with wave.open(path, "wb") as w:
+                    loaded[model].synthesize_wav(txt, w, syn_config=SynthesisConfig(length_scale=ls))
+            with wave.open(path) as w:
+                sr0 = w.getframerate()
+                x = np.frombuffer(w.readframes(w.getnframes()), np.int16).astype(np.float64) / 32768
+            # pitch factor < 1: play slower (lower + longer), then resample to SR
+            src_sr = sr0 * pitch
+            n_out = int(len(x) / src_sr * SR)
+            y = np.interp(np.linspace(0, len(x) - 1, n_out), np.arange(len(x)), x)
+            y = y / (np.abs(y).max() + 1e-9) * 0.55 * gain
+            c["voice"] = y
+            c["vdur"] = len(y) / SR
+
+
+# =====================================================================
 #  TIMING
 # =====================================================================
 def cue_len(c):
@@ -1647,6 +1699,8 @@ def cue_len(c):
         return c["sec"]
     n = len(c["text"])
     if c["kind"] == "dlg":
+        if "vdur" in c:
+            return max(1.8, c["vdur"] + 0.8, 0.8 + n / 22.0)
         return max(2.4, 1.0 + n / 13.0)
     return max(2.8, 1.2 + n / 15.0)
 
@@ -2179,7 +2233,18 @@ def build_audio(total, outwav):
                     M.put(sfx("knock", {}) * 0.6, t0 + o)
             else:
                 M.put(sfx(name, kw), t0)
-    a = M.a
+    vt = np.zeros_like(M.a)
+    for sh in SHOTS:
+        for a0, b0, c in sh.get("timed", []):
+            if "voice" in c:
+                i = int((sh["start"] + a0 + 0.2) * SR)
+                v = c["voice"]
+                j = min(len(vt), i + len(v))
+                vt[i:j] += v[: j - i]
+    act = lp(np.abs(vt), 4.0)
+    act = np.clip(act / 0.05, 0, 1)
+    duck = 1 - 0.6 * act
+    a = M.a * duck
     for s, e in muffled:
         i, j = int(s * SR), int(e * SR)
         a[i:j] = lp(a[i:j], 300)
@@ -2192,6 +2257,8 @@ def build_audio(total, outwav):
     F = 1 << (L - 1).bit_length()
     wet = np.fft.irfft(np.fft.rfft(a, F) * np.fft.rfft(ir, F), F)[: len(a)]
     out = 0.7 * a + 0.3 * wet
+    out = out / (np.percentile(np.abs(out), 99.95) + 1e-9) * 0.5
+    out = out + vt * 0.95
     for s, e in muted:
         i, j = int(s * SR), int(e * SR)
         r = int(0.15 * SR)
@@ -2199,8 +2266,7 @@ def build_audio(total, outwav):
         out[max(0, i - r):i] *= np.linspace(1, 0, i - max(0, i - r))
         out[j:j + r] *= np.linspace(0, 1, len(out[j:j + r]))
     out = out[: int(total * SR)]
-    peak = np.percentile(np.abs(out), 99.95)
-    out = np.tanh(out / peak * 0.9) * 0.85
+    out = np.tanh(out * 1.1) * 0.9
     pcm = (out * 32767).astype(np.int16)
     with wave.open(outwav, "wb") as w:
         w.setnchannels(1)
@@ -2213,6 +2279,7 @@ def build_audio(total, outwav):
 def main():
     outdir = sys.argv[1]
     os.makedirs(outdir, exist_ok=True)
+    synth_voices(os.path.join(outdir, "tts"))
     total = layout()
     print(f"shots: {len(SHOTS)}  total: {total / 60:.1f} min", flush=True)
     if len(sys.argv) > 2 and sys.argv[2] == "preview":
