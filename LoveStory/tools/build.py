@@ -7,6 +7,9 @@
   python3 tools/build.py analyze            әннің битін табу -> scenes/beats.json
   python3 tools/build.py render [--preview] [--grade] [--snap]
                                             output/lovestory.mp4 (немесе _preview.mp4)
+  python3 tools/build.py mood [--preview] [--grade] [--snap] [--vertical]
+                                            output/moodfilm.mp4: scenes/moodfilm.csv бойынша
+                                            ~46 с тизер (--vertical: 1080x1920, Shorts/Reels)
 
 Видео жоқ кадрдың орнына кадр нөмірі мен сипаттамасы жазылған сұр экран қойылады,
 сондықтан аниматикті (ритм тексеру үшін) бір видеосыз-ақ жинауға болады.
@@ -27,11 +30,13 @@ SHOTS = ROOT / "scenes" / "shots.csv"
 TOKENS = ROOT / "scenes" / "tokens.json"
 BEATS = ROOT / "scenes" / "beats.json"
 STORYBOARD = ROOT / "scenes" / "storyboard.md"
+MOOD = ROOT / "scenes" / "moodfilm.csv"
 VIDEOS = ROOT / "videos"
 SONG = ROOT / "music" / "song.mp3"
 OUT = ROOT / "output"
 FPS = 24
 FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+TITLE_FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf"
 
 GRADES = {
     "warm": "colorbalance=rs=0.04:bs=-0.04:rm=0.03:bm=-0.03,eq=saturation=1.06:contrast=1.03",
@@ -76,11 +81,14 @@ def probe_duration(path):
         return None
 
 
-def snap_to_beats(shots):
-    """Кадр шекараларын ең жақын битке (±0.6 с) жылжытады."""
+def snap_to_beats(shots, offset=0.0):
+    """Кадр шекараларын ең жақын битке (±0.6 с) жылжытады.
+
+    offset: ән қай секундтан басталады (мудфильм әннің ортасынан басталады).
+    """
     if not BEATS.exists():
         sys.exit("scenes/beats.json жоқ. Алдымен: python3 tools/build.py analyze")
-    beats = json.loads(BEATS.read_text())["beats"]
+    beats = [b - offset for b in json.loads(BEATS.read_text())["beats"]]
     bounds = [s["start"] for s in shots] + [shots[-1]["start"] + shots[-1]["dur"]]
     new = [bounds[0]]
     for b in bounds[1:-1]:
@@ -169,6 +177,80 @@ def run(cmd):
         sys.exit("ffmpeg қатесі:\n" + r.stderr[-2000:])
 
 
+def render_segments(shots, tmp, w, h, preset, grade):
+    """Әр кадрды бірдей форматтағы жеке файлға шығарады, тізімін қайтарады."""
+    parts = []
+    for i, s in enumerate(shots):
+        frames = round(s["dur"] * FPS)
+        seg = tmp / f"{i:03d}.mp4"
+        focus = float(s.get("focus") or 0.5)
+        vf = [f"scale={w}:{h}:force_original_aspect_ratio=increase",
+              f"crop={w}:{h}:(iw-{w})*{focus}:(ih-{h})/2",
+              f"fps={FPS}", "setsar=1", f"tpad=stop_mode=clone:stop_duration={s['dur']}"]
+        if s["look"] == "black":
+            inp = ["-f", "lavfi", "-i", f"color=c=black:s={w}x{h}:r={FPS}:d={s['dur'] + 1}"]
+        elif s["file"].exists():
+            inp = ["-ss", str(s["clip_in"]), "-i", str(s["file"])]
+            if grade and s["look"] in GRADES:
+                vf.append(GRADES[s["look"]])
+        else:
+            label = tmp / f"{i:03d}.txt"
+            body = "\n".join(textwrap.wrap(s["scene_kk"], 48 if w > h else 26))
+            label.write_text(f"{s['id']}  {s['section']}\n«{s.get('lyric', '')}»\n\n{body}",
+                             encoding="utf-8")
+            inp = ["-f", "lavfi", "-i", f"color=c=0x1e1e24:s={w}x{h}:r={FPS}:d={s['dur'] + 1}"]
+            vf.append(f"drawtext=fontfile={FONT}:textfile={label}:fontcolor=white:"
+                      f"fontsize={min(w, h) // 22}:x=(w-text_w)/2:y=(h-text_h)/2:line_spacing=10")
+        if s.get("text"):
+            # «|» жаңа жол. Әр жол бөлек ортаға қойылады.
+            lines = s["text"].split("|")
+            size = min(w, h) // (14 if s["look"] == "black" else 24)
+            step = round(size * 1.6)
+            top = (h - step * len(lines)) // 2 if s["look"] == "black" else h - h // 10 - step * len(lines)
+            for j, line in enumerate(lines):
+                if not line.strip():
+                    continue
+                label = tmp / f"{i:03d}_t{j}.txt"
+                label.write_text(line, encoding="utf-8")
+                vf.append(f"drawtext=fontfile={TITLE_FONT}:textfile={label}:fontcolor=0xf2ead8:"
+                          f"fontsize={size if j else round(size * 1.25)}:x=(w-text_w)/2:"
+                          f"y={top + j * step}:alpha='min(1,t/0.8)'")
+        if i == 0:
+            vf.append("fade=t=in:st=0:d=1.5")
+        if i == len(shots) - 1:
+            vf.append(f"fade=t=out:st={max(0, s['dur'] - 1.2)}:d=1.2")
+        run(["ffmpeg", "-y", "-v", "error", *inp, "-vf", ",".join(vf), "-an",
+             "-frames:v", str(frames), "-c:v", "libx264", "-preset", preset, "-crf", "18",
+             "-pix_fmt", "yuv420p", str(seg)])
+        parts.append(seg)
+        print(f"\r{i + 1}/{len(shots)} кадр", end="", flush=True)
+    print()
+    return parts
+
+
+def assemble(parts, tmp, out, audio_start=0.0, fade_out=0.0):
+    """Кесінділерді біріктіріп, әнді (audio_start секундынан) қосады."""
+    listfile = tmp / "list.txt"
+    listfile.write_text("".join(f"file '{p}'\n" for p in parts))
+    video = tmp / "video.mp4"
+    run(["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", str(listfile),
+         "-c", "copy", str(video)])
+    if SONG.exists():
+        total = probe_duration(video)
+        af = ["afade=t=in:st=0:d=0.8"] if audio_start > 0 else []
+        if fade_out:
+            af.append(f"afade=t=out:st={max(0, total - fade_out)}:d={fade_out}")
+        run(["ffmpeg", "-y", "-v", "error", "-i", str(video),
+             "-ss", str(audio_start), "-t", str(total), "-i", str(SONG),
+             "-map", "0:v", "-map", "1:a", *(["-af", ",".join(af)] if af else []),
+             "-c:v", "copy", "-c:a", "aac", "-b:a", "256k",
+             "-shortest", "-movflags", "+faststart", str(out)])
+    else:
+        print("! music/song.mp3 жоқ, дыбыссыз шығарамын")
+        shutil.copy(video, out)
+    print(f"Дайын: {out.relative_to(ROOT)} ({fmt(probe_duration(out))})")
+
+
 def cmd_render(args):
     shots = load_shots()
     if args.snap:
@@ -177,49 +259,59 @@ def cmd_render(args):
     preset = "veryfast" if args.preview else "slow"
     OUT.mkdir(exist_ok=True)
     tmp = Path(tempfile.mkdtemp(prefix="lovestory_"))
-    parts = []
     try:
-        for i, s in enumerate(shots):
-            frames = round(s["dur"] * FPS)
-            seg = tmp / f"{i:03d}.mp4"
-            vf = [f"scale={w}:{h}:force_original_aspect_ratio=increase", f"crop={w}:{h}",
-                  f"fps={FPS}", "setsar=1", f"tpad=stop_mode=clone:stop_duration={s['dur']}"]
-            if s["file"].exists():
-                inp = ["-ss", str(s["clip_in"]), "-i", str(s["file"])]
-                if args.grade and s["look"] in GRADES:
-                    vf.append(GRADES[s["look"]])
-            else:
-                label = tmp / f"{i:03d}.txt"
-                body = "\n".join(textwrap.wrap(s["scene_kk"], 48))
-                label.write_text(f"{s['id']}  {s['section']}\n«{s.get('lyric', '')}»\n\n{body}",
-                                 encoding="utf-8")
-                inp = ["-f", "lavfi", "-i", f"color=c=0x1e1e24:s={w}x{h}:r={FPS}:d={s['dur'] + 1}"]
-                vf.append(f"drawtext=fontfile={FONT}:textfile={label}:fontcolor=white:"
-                          f"fontsize={h // 22}:x=(w-text_w)/2:y=(h-text_h)/2:line_spacing=10")
-            if i == 0:
-                vf.append("fade=t=in:st=0:d=1.5")
-            if i == len(shots) - 1:
-                vf.append(f"fade=t=out:st={max(0, s['dur'] - 3)}:d=3")
-            run(["ffmpeg", "-y", "-v", "error", *inp, "-vf", ",".join(vf), "-an",
-                 "-frames:v", str(frames), "-c:v", "libx264", "-preset", preset, "-crf", "18",
-                 "-pix_fmt", "yuv420p", str(seg)])
-            parts.append(seg)
-            print(f"\r{i + 1}/{len(shots)} кадр", end="", flush=True)
-        print()
-        listfile = tmp / "list.txt"
-        listfile.write_text("".join(f"file '{p}'\n" for p in parts))
-        video = tmp / "video.mp4"
-        run(["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", str(listfile),
-             "-c", "copy", str(video)])
+        parts = render_segments(shots, tmp, w, h, preset, args.grade)
         out = OUT / ("lovestory_preview.mp4" if args.preview else "lovestory.mp4")
-        if SONG.exists():
-            run(["ffmpeg", "-y", "-v", "error", "-i", str(video), "-i", str(SONG),
-                 "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "256k",
-                 "-shortest", "-movflags", "+faststart", str(out)])
-        else:
-            print("! music/song.mp3 жоқ, дыбыссыз шығарамын")
-            shutil.copy(video, out)
-        print(f"Дайын: {out.relative_to(ROOT)} ({fmt(probe_duration(out))})")
+        assemble(parts, tmp, out)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def load_mood():
+    """scenes/moodfilm.csv оқиды. Кадр сипаттамасы мен файлы shots.csv-дан алынады."""
+    by_id = {s["id"]: s for s in load_shots()}
+    with open(MOOD, newline="", encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    if not rows or rows[0]["id"] not in by_id:
+        sys.exit("moodfilm.csv бірінші жолы shots.csv-дағы кадр болуы керек (ән содан басталады)")
+    audio_start = by_id[rows[0]["id"]]["start"]
+    t, shots = 0.0, []
+    for r in rows:
+        base = by_id.get(r["id"])
+        if base is None and r["look"] != "black":
+            sys.exit(f"moodfilm.csv: {r['id']} кадры shots.csv-да жоқ")
+        s = {"id": r["id"], "section": base["section"] if base else "",
+             "lyric": base["lyric"] if base else "", "scene_kk": base["scene_kk"] if base else "",
+             "file": base["file"] if base else VIDEOS / "_none.mp4",
+             "dur": float(r["dur"]), "clip_in": float(r.get("clip_in") or 1.0),
+             "look": r["look"], "focus": r.get("focus") or "0.5", "text": r.get("text", ""),
+             "start": t}
+        t += s["dur"]
+        shots.append(s)
+    return shots, audio_start
+
+
+def cmd_mood(args):
+    shots, audio_start = load_mood()
+    total = shots[-1]["start"] + shots[-1]["dur"]
+    print(f"Мудфильм: {len(shots)} кадр, {fmt(total)}, ән {fmt(audio_start)}–"
+          f"{fmt(audio_start + total)} аралығынан")
+    missing = [s["id"] for s in shots if s["look"] != "black" and not s["file"].exists()]
+    if missing:
+        print("Видеосы жоқ (сұр экран қойылады): " + ", ".join(missing))
+    if args.snap:
+        shots = snap_to_beats(shots, offset=audio_start)
+    if args.vertical:
+        w, h = (540, 960) if args.preview else (1080, 1920)
+    else:
+        w, h = (960, 540) if args.preview else (1920, 1080)
+    preset = "veryfast" if args.preview else "slow"
+    OUT.mkdir(exist_ok=True)
+    tmp = Path(tempfile.mkdtemp(prefix="moodfilm_"))
+    try:
+        parts = render_segments(shots, tmp, w, h, preset, args.grade)
+        name = "moodfilm" + ("_vertical" if args.vertical else "") + ("_preview" if args.preview else "")
+        assemble(parts, tmp, OUT / f"{name}.mp4", audio_start=audio_start, fade_out=3.0)
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
@@ -235,6 +327,12 @@ def main():
     r.add_argument("--grade", action="store_true", help="warm/cold/dream түс түзету")
     r.add_argument("--snap", action="store_true", help="кесінділерді битке тарту")
     r.set_defaults(fn=cmd_render)
+    m = sub.add_parser("mood")
+    m.add_argument("--preview", action="store_true", help="жартылай өлшем, жылдам")
+    m.add_argument("--grade", action="store_true", help="warm/cold/dream түс түзету")
+    m.add_argument("--snap", action="store_true", help="кесінділерді битке тарту")
+    m.add_argument("--vertical", action="store_true", help="9:16, Shorts/Reels/TikTok")
+    m.set_defaults(fn=cmd_mood)
     a = p.parse_args()
     a.fn(a)
 
