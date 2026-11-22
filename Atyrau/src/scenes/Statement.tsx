@@ -8,7 +8,7 @@ type Props = { kicker: string; title: string; lines: string[]; footnote?: string
 export const Statement: React.FC<Props> = ({ kicker, title, lines, footnote, hue }) => {
   const f = useCurrentFrame();
   return (
-    <AbsoluteFill style={{ fontFamily: sans, color: C.sand, padding: "150px 160px", justifyContent: "center" }}>
+    <AbsoluteFill style={{ fontFamily: sans, color: C.sand, padding: "110px 160px 190px", justifyContent: "center" }}>
       <Backdrop hue={hue} />
       <Kicker style={enter(f, 0)}>{kicker}</Kicker>
       <Interactive.Div name="Title" style={{ fontFamily: serif, fontSize: 170, lineHeight: 1.05, margin: "30px 0 50px", ...enter(f, 25) }}>

@@ -1,4 +1,4 @@
-import { AbsoluteFill, Interactive, interpolate, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Interactive, useCurrentFrame } from "remotion";
 import { C, enter, progress, sans, serif } from "../theme";
 import { Backdrop } from "./Backdrop";
 
@@ -27,7 +27,7 @@ export const Hook: React.FC = () => {
       <Interactive.Div name="Asia" style={{ position: "absolute", right: 300, top: 470, fontSize: 96, fontWeight: 800, letterSpacing: 12, ...enter(f, 70) }}>
         АЗИЯ
       </Interactive.Div>
-      <AbsoluteFill style={{ justifyContent: "flex-end", alignItems: "center", paddingBottom: 130 }}>
+      <AbsoluteFill style={{ justifyContent: "flex-end", alignItems: "center", paddingBottom: 190 }}>
         <Interactive.Div
           name="Headline"
           style={{
@@ -37,7 +37,6 @@ export const Hook: React.FC = () => {
             background: `${C.bg}cc`,
             padding: "10px 50px",
             ...enter(f, 130),
-            opacity: interpolate(f, [130, 150, 335, 360], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
           }}
         >
           Бір қала. Екі құрлық.

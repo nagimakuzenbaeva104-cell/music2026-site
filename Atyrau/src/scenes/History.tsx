@@ -16,14 +16,14 @@ export const History: React.FC = () => {
     <AbsoluteFill style={{ fontFamily: sans, color: C.sand, padding: "130px 140px" }}>
       <Backdrop hue={C.gold} />
       <Kicker style={enter(f, 0)}>Тарих</Kicker>
-      <div style={{ position: "absolute", left: 140, right: 140, top: 470, height: 8, background: `${C.muted}44` }}>
+      <div style={{ position: "absolute", left: 140, right: 140, top: 400, height: 8, background: `${C.muted}44` }}>
         <div style={{ width: `${line * 100}%`, height: "100%", background: C.gold }} />
       </div>
       {steps.map((s, i) => (
         <Interactive.Div
           key={s.year}
           name={`Step ${i + 1}`}
-          style={{ position: "absolute", left: 140 + i * 560, top: 300, width: 500, ...enter(f, s.at) }}
+          style={{ position: "absolute", left: 140 + i * 560, top: 230, width: 500, ...enter(f, s.at) }}
         >
           <div style={{ fontFamily: serif, fontSize: 120, color: C.gold, lineHeight: 1 }}>{s.year}</div>
           <div style={{ width: 36, height: 36, borderRadius: 18, background: C.gold, margin: "34px 0 40px" }} />
@@ -33,7 +33,7 @@ export const History: React.FC = () => {
       ))}
       <Interactive.Div
         name="Meaning"
-        style={{ position: "absolute", left: 140, bottom: 110, fontSize: 56, fontWeight: 600, ...enter(f, 720) }}
+        style={{ position: "absolute", left: 140, bottom: 210, fontSize: 56, fontWeight: 600, ...enter(f, 720) }}
       >
         «Атырау» — <span style={{ color: C.gold }}>өзен сағасы</span>, атырап
       </Interactive.Div>

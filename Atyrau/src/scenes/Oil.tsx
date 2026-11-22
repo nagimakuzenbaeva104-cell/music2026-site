@@ -12,7 +12,7 @@ export const Oil: React.FC = () => {
     <AbsoluteFill style={{ fontFamily: sans, color: C.sand, padding: "130px 160px" }}>
       <Backdrop hue="#8a5a1a" />
       <Kicker style={enter(f, 0)}>Экономика</Kicker>
-      <Interactive.Div name="Title" style={{ fontFamily: serif, fontSize: 150, margin: "20px 0 80px", ...enter(f, 25) }}>
+      <Interactive.Div name="Title" style={{ fontFamily: serif, fontSize: 150, margin: "10px 0 50px", ...enter(f, 25) }}>
         Мұнай астанасы
       </Interactive.Div>
       <div style={{ display: "flex", gap: 120 }}>
@@ -27,7 +27,7 @@ export const Oil: React.FC = () => {
           <div style={{ fontSize: 44, color: C.muted, marginTop: 10 }}>ашылған жылы, теңізде</div>
         </Interactive.Div>
       </div>
-      <Interactive.Div name="Reserve" style={{ position: "absolute", bottom: 100, left: 160, fontSize: 52, ...enter(f, 480) }}>
+      <Interactive.Div name="Reserve" style={{ position: "absolute", bottom: 150, left: 160, fontSize: 52, ...enter(f, 480) }}>
         Қашағанның алынатын қоры — шамамен <span style={{ color: C.gold, fontWeight: 800 }}>13 млрд баррель</span>
       </Interactive.Div>
     </AbsoluteFill>

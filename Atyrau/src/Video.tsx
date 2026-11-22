@@ -6,31 +6,53 @@ import { Location } from "./scenes/Location";
 import { Oil } from "./scenes/Oil";
 import { Outro } from "./scenes/Outro";
 import { Makhambet, Saraishyk, Sturgeon } from "./scenes/Texts";
+import { Narration } from "./Narration";
+import { NARRATION, TOTAL_FRAMES } from "./narration";
+import { AbsoluteFill } from "remotion";
 
-export const SCENES = [
-  { id: "Hook", component: Hook, durationInFrames: 360 },
-  { id: "Location", component: Location, durationInFrames: 600 },
-  { id: "History", component: History, durationInFrames: 900 },
-  { id: "Saraishyk", component: Saraishyk, durationInFrames: 600 },
-  { id: "Makhambet", component: Makhambet, durationInFrames: 600 },
-  { id: "Oil", component: Oil, durationInFrames: 750 },
-  { id: "Sturgeon", component: Sturgeon, durationInFrames: 450 },
-  { id: "Outro", component: Outro, durationInFrames: 450 },
-] as const;
+const COMPONENTS = {
+  Hook,
+  Location,
+  History,
+  Saraishyk,
+  Makhambet,
+  Oil,
+  Sturgeon,
+  Outro,
+};
 
-export const FADE = 20;
-export const TOTAL =
-  SCENES.reduce((s, x) => s + x.durationInFrames, 0) - FADE * (SCENES.length - 1);
+// Scene lengths come from the narration (tools/tts.py), so voice and visuals stay in sync.
+export const SCENES = NARRATION.map((n) => ({
+  id: n.id,
+  component: COMPONENTS[n.id as keyof typeof COMPONENTS],
+  durationInFrames: n.durationInFrames,
+}));
+
+export const FADE = 20; // must match tools/tts.py
+export const TOTAL = TOTAL_FRAMES;
 
 export const AtyrauVideo: React.FC = () => (
-  <TransitionSeries>
-    {SCENES.flatMap(({ id, component: Scene, durationInFrames }, i) => [
-      ...(i > 0
-        ? [<TransitionSeries.Transition key={`t-${id}`} presentation={fade()} timing={linearTiming({ durationInFrames: FADE })} />]
-        : []),
-      <TransitionSeries.Sequence key={id} name={id} durationInFrames={durationInFrames}>
-        <Scene />
-      </TransitionSeries.Sequence>,
-    ])}
-  </TransitionSeries>
+  <AbsoluteFill>
+    <TransitionSeries>
+      {SCENES.flatMap(({ id, component: Scene, durationInFrames }, i) => [
+        ...(i > 0
+          ? [
+              <TransitionSeries.Transition
+                key={`t-${id}`}
+                presentation={fade()}
+                timing={linearTiming({ durationInFrames: FADE })}
+              />,
+            ]
+          : []),
+        <TransitionSeries.Sequence
+          key={id}
+          name={id}
+          durationInFrames={durationInFrames}
+        >
+          <Scene />
+        </TransitionSeries.Sequence>,
+      ])}
+    </TransitionSeries>
+    <Narration />
+  </AbsoluteFill>
 );
