@@ -60,6 +60,11 @@ def load_project(project_dir):
     fmt_name = proj.get("format", "short")
     if fmt_name not in brand["formats"]:
         raise FactoryError(f"Формат {fmt_name} не описан в brand.yaml")
+    # переопределения на уровне видео: язык и голос (например, англоязычный выпуск)
+    if proj.get("language"):
+        brand["language"] = proj["language"]
+    if proj.get("voice"):
+        brand["voice"] = {**brand["voice"], **proj["voice"]}
     validate(proj)
     return project_dir, proj, brand, fmt_name
 

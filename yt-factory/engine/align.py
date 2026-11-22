@@ -93,8 +93,34 @@ def whisper_words(wav_path, lang):
         return None
 
 
-def word_starts(words, wav_path, speech_dur, lang):
-    """Время начала каждого слова сценария внутри сцены."""
+def loudness_mask(audio, sr, thr=0.02):
+    """Покадрово (10 мс): звучит ли голос."""
+    import numpy as np
+    fr = sr // 100
+    return np.sqrt(np.convolve(audio ** 2, np.ones(fr) / fr, mode="same"))[::fr] > thr
+
+
+def snap_after_pause(t, loud):
+    """Whisper ставит начало слова после паузы слишком рано — на хвост предыдущего.
+    Если в первые 0.12 с после отметки начинается тишина ≥ 0.1 с, слово на самом деле
+    начинается там, где голос возвращается."""
+    k = int(t * 100)
+    j = k
+    while j < min(k + 13, len(loud) - 10):   # провалы короче 0.1 с (микропаузы) пропускаем
+        if loud[j]:
+            j += 1
+            continue
+        end = j
+        while end < len(loud) and not loud[end]:
+            end += 1
+        if end - j >= 10 and end < len(loud):
+            return end / 100
+        j = end
+    return t
+
+
+def word_starts(words, wav_path, speech_dur, lang, ww=None, with_mask=False):
+    """Время начала каждого слова сценария. with_mask: + список «услышано ли слово»."""
     weights = [syllables(w["w"]) for w in words]
     total = sum(weights)
     prop, acc = [], 0.0
@@ -102,9 +128,10 @@ def word_starts(words, wav_path, speech_dur, lang):
         prop.append(speech_dur * acc / total)
         acc += wt
 
-    ww = whisper_words(wav_path, lang)
+    if ww is None:
+        ww = whisper_words(wav_path, lang)
     if not ww:
-        return prop, "слоги"
+        return (prop, "слоги", [False] * len(words)) if with_mask else (prop, "слоги")
     # Посимвольное сопоставление: устойчиво к тому, что Whisper склеивает/дробит
     # слова («Уолл-стрит» -> «Нолл Аль Стрит»). Текст сценария не меняется.
     a_str, a_pos = "", []
@@ -131,6 +158,7 @@ def word_starts(words, wav_path, speech_dur, lang):
         if hits:
             starts[i] = max(min(hits), 0.0)
             matched += 1
+    mask = [x is not None for x in starts]
     if starts[0] is None:
         starts[0] = ww[0][1]
     i = 0
@@ -149,6 +177,9 @@ def word_starts(words, wav_path, speech_dur, lang):
             i = j
         else:
             i += 1
+    loud = loudness_mask(read_audio(wav_path, 16000), 16000)
+    starts = [starts[0]] + [snap_after_pause(t, loud) for t in starts[1:]]
     for k in range(1, len(starts)):  # монотонность
         starts[k] = max(starts[k], starts[k - 1] + 0.05)
-    return starts, f"whisper {matched}/{len(words)} слов"
+    method = f"whisper {matched}/{len(words)} слов"
+    return (starts, method, mask) if with_mask else (starts, method)

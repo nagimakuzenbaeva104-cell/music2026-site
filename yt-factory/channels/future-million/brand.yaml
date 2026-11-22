@@ -1,11 +1,11 @@
 # Future Million: бизнес, миллиардеры, технологии. Документальный стиль.
 name: Future Million
-language: ru
+language: en
 
 voice:
   engine: piper
-  model: ru_RU-dmitri-medium   # самый разборчивый из 4 русских голосов Piper (тест Whisper)
-  length_scale: 0.88           # <1 быстрее, >1 медленнее
+  model: en_US-ryan-high       # мужской, класс high; запасной: en_US-joe-medium (ru: ru_RU-dmitri-medium)
+  length_scale: 0.95           # <1 быстрее, >1 медленнее
   sentence_silence: 0.12
   pad_after: 0.18              # пауза после каждой сцены, сек
 
@@ -25,6 +25,9 @@ colors:
 subtitles:
   max_words: 3                 # слов на экране одновременно
   max_chars: 16
+  min_on_screen: 0.6           # экран короче — склеивается с соседним
+  max_cps: 20                  # символов в секунду, комфортное чтение
+  merge_max_chars: 24
   size: {short: 122, long: 84}
   y: {short: 0.64, long: 0.80} # доля высоты кадра (центр строки). Shorts: выше UI YouTube
   outline: 7

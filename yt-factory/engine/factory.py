@@ -2,6 +2,7 @@
 
   python3 -m engine.factory storyboard <проект>   озвучка + тайминг -> storyboard.md
   python3 -m engine.factory preview    <проект>   черновой рендер 540p + контактный лист
+  python3 -m engine.factory check      <проект>   отчёт качества превью -> qa.md
   python3 -m engine.factory final      <проект>   финальный MP4 (только если approved: true)
 
   --format short|long   переопределить формат проекта (9:16 / 16:9)
@@ -14,7 +15,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from . import align, audio, subs, tts, visuals
+from . import align, audio, qa, subs, tts, visuals
 from .common import FONTS, FactoryError, duration, load_project, run, write_wav
 
 TRANSITIONS = {"fade", "fadeblack", "dissolve", "smoothleft", "smoothright", "smoothup",
@@ -23,6 +24,57 @@ TRANSITIONS = {"fade", "fadeblack", "dissolve", "smoothleft", "smoothright", "sm
 
 def plain(text):
     return text.replace("[", "").replace("]", "")
+
+
+ASSET_EXT = (".mp4", ".mov", ".webm", ".jpg", ".jpeg", ".png", ".webp")
+
+
+def find_asset(project_dir, scene, idx):
+    """Явный asset из scenes.yaml или файл assets/sNN.* (NN = id сцены)."""
+    if scene.get("asset"):
+        if not (project_dir / "assets" / scene["asset"]).exists():
+            raise FactoryError(f"Сцена {idx}: нет файла assets/{scene['asset']}")
+        return scene["asset"]
+    sid = scene.get("id", idx)
+    for ext in ASSET_EXT:
+        f = project_dir / "assets" / f"s{int(sid):02d}{ext}"
+        if f.exists():
+            return f.name
+    return None
+
+
+def merge_fast(chunks, speech_end, sb):
+    """Склеивает экраны, которые мелькают слишком быстро (< min_on_screen или > max_cps),
+    с соседним, если вместе они не длиннее merge_max_chars и не разрывают предложение."""
+    min_on = sb.get("min_on_screen", 0.6)
+    max_cps = sb.get("max_cps", 20)
+    limit = sb.get("merge_max_chars", 24)
+    txt = lambda c: " ".join(w["w"] for w in c["words"])
+    changed = True
+    while changed:
+        changed = False
+        for j in range(len(chunks)):
+            end = chunks[j + 1]["start"] if j + 1 < len(chunks) else speech_end
+            dur = end - chunks[j]["start"]
+            fast = dur < min_on or len(txt(chunks[j])) / max(dur, 0.01) > max_cps
+            if not fast:
+                continue
+            # склеиваем с соседом, если не пересекаем конец предложения
+            cand = []
+            if j + 1 < len(chunks) and not re.search(r"[.!?]$", chunks[j]["words"][-1]["w"]):
+                cand.append(j)
+            if j > 0 and not re.search(r"[.!?]$", chunks[j - 1]["words"][-1]["w"]):
+                cand.append(j - 1)
+            for a in cand:
+                merged = chunks[a]["words"] + chunks[a + 1]["words"]
+                if len(" ".join(w["w"] for w in merged)) <= limit:
+                    chunks[a] = {"words": merged, "start": chunks[a]["start"]}
+                    del chunks[a + 1]
+                    changed = True
+                    break
+            if changed:
+                break
+    return chunks
 
 
 def build_timeline(project_dir, proj, brand, fmt):
@@ -43,6 +95,7 @@ def build_timeline(project_dir, proj, brand, fmt):
             st = t + starts[k]
             k += len(ch)
             out_chunks.append({"words": ch, "start": round(st, 3)})
+        out_chunks = merge_fast(out_chunks, t + speech + 0.2, sb)
         for j, ch in enumerate(out_chunks):
             nxt = out_chunks[j + 1]["start"] if j + 1 < len(out_chunks) else t + speech + 0.2
             ch["end"] = round(min(nxt, t + slot), 3)
@@ -58,7 +111,8 @@ def build_timeline(project_dir, proj, brand, fmt):
         scenes.append({
             "id": s.get("id", i), "start": round(t, 3), "end": round(t + slot, 3),
             "speech": round(speech, 3), "wav": str(wav), "say": say, "text": s["text"],
-            "hero": s.get("hero"), "visual": s.get("visual", ""), "asset": s.get("asset"),
+            "hero": s.get("hero"), "visual": s.get("visual", ""),
+            "asset": find_asset(project_dir, s, i), "asset_hint": s.get("asset_hint"),
             "transition": s.get("transition", brand["transitions"]["default"]),
             "chunks": out_chunks, "align": method, "source": s.get("source"),
         })
@@ -92,7 +146,7 @@ def write_storyboard(project_dir, proj, brand, tl):
             f"## Сцена {s['id']} · {s['start']:.1f}–{s['end']:.1f} с ({s['end'] - s['start']:.1f} с)",
             "",
             f"- **Визуал:** {s['visual'] or '—'}" + (f" · файл `{s['asset']}`" if s['asset']
-                                                    else " · фирменный градиент (нет клипа)"),
+                                                    else f" · ⚠️ нет кадра: положите `assets/s{int(s['id']):02d}.mp4` (или .jpg) — сейчас фирменный градиент"),
             f"- **Hero-элемент:** {s['hero'] or '—'}",
             f"- **Озвучка:** «{s['say']}»",
             f"- **Субтитры:** {subs_txt}  ",
@@ -183,7 +237,7 @@ def contact_sheet(video, tl, out):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawTextHelpFormatter)
-    ap.add_argument("cmd", choices=["storyboard", "preview", "final"])
+    ap.add_argument("cmd", choices=["storyboard", "preview", "check", "final"])
     ap.add_argument("project")
     ap.add_argument("--format", choices=["short", "long"])
     a = ap.parse_args(argv)
@@ -204,6 +258,16 @@ def main(argv=None):
         if a.cmd in ("preview", "final"):
             out = render(project_dir, proj, brand, tl, final=a.cmd == "final")
             print(f"✔ {out} ({duration(out):.1f} с)")
+        if a.cmd == "check":
+            name = re.sub(r"[^\w-]+", "_", project_dir.name)
+            video = project_dir / "output" / f"{name}_{fmt}_preview.mp4"
+            if not video.exists():
+                raise FactoryError("Сначала соберите превью: factory preview <проект>")
+            rep, intel, measured, bad, missing = qa.write_report(project_dir, tl, brand, video)
+            print(f"  озвучка: {intel:.0f}% слов распознано · синхронизация: "
+                  f"{len(measured)} экранов измерено, {len(bad)} с расхождением > {qa.SYNC_OK} с · "
+                  f"кадров нет в {len(missing)} сценах")
+            print(f"✔ отчёт: {rep}")
     except FactoryError as e:
         print(f"✖ {e}", file=sys.stderr)
         sys.exit(1)

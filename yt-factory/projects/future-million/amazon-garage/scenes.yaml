@@ -1,65 +1,74 @@
-# Пилот Future Million. Shorts 9:16, цель 25 с.
-# text  — то, что видно на экране; [в скобках] = ключевые слова (золото #FFD700)
-# say   — как читает диктор (числа прописью в нужном падеже, латиница по-русски)
-# hero  — крупная фоновая цифра/слово сцены (только факт из текста)
+# Пилот Future Million — английская версия. Shorts 9:16 (1080×1920), цель 25 с.
+# Перевод русского сценария без изменения фактов (русская версия — в истории git).
+# text  — текст на экране; [в скобках] = ключевые слова (золото #FFD700)
+# say   — как читает диктор (числа словами)
+# hero  — крупное фоновое слово/цифра сцены (только факт из текста)
 # asset — файл из assets/ (ваш клип или фото). Без него — фирменный градиент.
 channel: future-million
-title: "Amazon начинался в гараже"
+title: "Amazon started in a garage"
+language: en
 format: short
 target_seconds: 25
-approved: false          # финальный рендер возможен только после «ДА» -> true
+approved: false          # финальный рендер — только после вашего «ДА»
 
 scenes:
   - id: 1
-    text: "В 1994 году [Джефф Безос] ушёл с поста вице-президента на [Уолл-стрит]."
-    say: "В тысяча девятьсот девяносто четвёртом году Джефф Безос ушёл с поста вице-президента на Уолл-стрит."
+    text: "In 1994, [Jeff Bezos] quit his job as a vice president on [Wall Street]."
+    say: "In nineteen ninety-four, Jeff Bezos quit his job as a vice president on Wall Street."
     hero: "1994"
-    visual: "Ночной Манхэттен, окна офисных башен (нужен клип/фото)"
+    visual: "Ночной Манхэттен, окна офисных башен"
+    asset_hint: "s01: manhattan night office"
     transition: fade
     source: "D. E. Shaw & Co. — фирма с Уолл-стрит; Безос был вице-президентом (historyofinformation.com)"
 
   - id: 2
-    text: "И открыл компанию в [гараже] в Белвью."
-    hero: "ГАРАЖ"
-    visual: "Пригородный гараж, тёплый свет лампы (нужен клип/фото)"
+    text: "And started a company in a [garage] in Bellevue."
+    hero: "GARAGE"
+    visual: "Пригородный гараж, тёплый свет лампы"
+    asset_hint: "s02: suburban garage night light"
     transition: smoothleft
     source: "Основана 5 июля 1994, гараж в Белвью, штат Вашингтон (history.com)"
 
   - id: 3
-    text: "Сначала она называлась [Cadabra]. Но юристу послышалось [cadaver] — «труп»."
-    say: "Сначала она называлась Кадабра. Но юристу послышалось кадавер — труп."
+    text: "At first it was called [Cadabra]. But a lawyer heard [“cadaver”] — a corpse."
+    say: "At first it was called Cadabra. But a lawyer heard: cadaver. A corpse."   # двоеточие/точка = чёткая пауза (проверено Whisper)
     hero: "CADABRA"
-    visual: "Старые документы о регистрации, печатная машинка (нужен клип/фото)"
+    visual: "Старые документы о регистрации, печатная машинка"
+    asset_hint: "s03: old documents typewriter"
     transition: fadeblack
     source: "Cadabra, Inc.; юрист услышал «cadaver» (history.com)"
 
   - id: 4
-    text: "Название сменили — так появился [Amazon], интернет-магазин [книг]."
-    say: "Название сменили — так появился Амазон, интернет-магазин книг."
+    text: "The name was changed — and [Amazon] was born, an online [bookstore]."
+    say: "The name was changed, and Amazon was born, an online bookstore."
     hero: "AMAZON"
-    visual: "Стопки книг, картонные коробки (нужен клип/фото)"
+    visual: "Стопки книг, картонные коробки"
+    asset_hint: "s04: stack of books cardboard boxes"
     transition: smoothup
     source: "Переименование через несколько месяцев; продажа книг онлайн (history.com)"
 
   - id: 5
-    text: "В 1997 году акции вышли на биржу по [18 долларов]."
-    say: "В тысяча девятьсот девяносто седьмом году акции вышли на биржу по восемнадцать долларов."
+    text: "In 1997, Amazon went public at [$18] a share."
+    say: "In nineteen ninety-seven, Amazon went public at eighteen dollars a share."
     hero: "$18"
-    visual: "Биржевое табло NASDAQ, бегущие котировки (нужен клип/фото)"
+    visual: "Биржевое табло, бегущие котировки"
+    asset_hint: "s05: stock market ticker board"
     transition: fade
     source: "IPO 15 мая 1997, $18 за акцию, NASDAQ: AMZN (CNN Money, 15.05.1997)"
 
   - id: 6
-    text: "После четырёх сплитов одна такая акция превратилась в [240]."
-    say: "После четырёх сплитов одна такая акция превратилась в двести сорок."
+    text: "After four stock splits, each of those shares became [240]."
+    say: "After four stock splits, each of those shares became two hundred forty."
     hero: "×240"
-    visual: "График роста, одна акция дробится на много (моушн-графика)"
+    visual: "График роста (моушн-графика)"
+    asset_hint: "s06: rising chart animation"
     transition: zoomin
     source: "4 сплита: 2:1 (1998), 3:1 (1999), 2:1 (1999), 20:1 (2022) = ×240 (The Motley Fool)"
 
   - id: 7
-    text: "Всё началось с [гаража]."
-    visual: "Возврат к гаражу, медленный отъезд камеры (нужен клип/фото)"
+    text: "It all started in a [garage]."
+    visual: "Возврат к гаражу, медленный отъезд камеры"
+    asset_hint: "s07: garage door closing"
     transition: fadeblack
 
 sources:
