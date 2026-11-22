@@ -1,12 +1,11 @@
 """Звук: голос + фоновая музыка (с приглушением под речь) + SFX на ключевых словах.
 
-Если в brand.yaml задан audio.music (например трек из YouTube Audio Library),
-используется он. Иначе синтезируется нейтральный эмбиент — это временная
-замена, а не «готовая музыка».
+Музыка: assets/music.mp3 проекта (например, из YouTube Audio Library) или
+audio.music в brand.yaml. off — без музыки; synth — временная синт-заглушка.
 """
 import numpy as np
 
-from .common import ROOT, SR, read_audio
+from .common import SR, read_audio
 
 
 def db(x):
@@ -81,7 +80,7 @@ def envelope(x, win=0.25):
     return e
 
 
-def build_mix(scene_wavs, scene_starts, total, sfx_events, brand):
+def build_mix(scene_wavs, scene_starts, total, sfx_events, brand, music_path=None):
     """Возвращает стерео-микс (n, 2) float32. Нормализация LUFS — при мультиплексе."""
     cfg = brand["audio"]
     n = int(total * SR) + SR
@@ -93,8 +92,10 @@ def build_mix(scene_wavs, scene_starts, total, sfx_events, brand):
     voice /= (np.abs(voice).max() + 1e-9)
     voice *= db(-3)
 
-    if cfg.get("music"):
-        m = read_audio(ROOT / cfg["music"])
+    if music_path is None:
+        music = np.zeros(n, dtype=np.float32)            # музыка выключена
+    elif music_path != "synth":
+        m = read_audio(music_path)
         reps = int(np.ceil(n / len(m)))
         music = np.tile(m, reps)[:n]
         tt = np.arange(n) / SR

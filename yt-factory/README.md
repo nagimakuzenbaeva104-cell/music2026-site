@@ -29,6 +29,8 @@ pip install -r requirements.txt      # + ffmpeg и ImageMagick в системе
    - `source` — источник факта (для Future Million обязательно)
 2. Раскадровка:  `python3 -m engine.factory storyboard projects/future-million/amazon-garage`
 3. Черновик 540p + контактный лист: `python3 -m engine.factory preview ...`
+   - проверка качества (озвучка, синхронизация, кадры): `... check ...`
+   - пример расположения текста и зон интерфейса Shorts: `... layout ...`
 4. После одобрения поставить `approved: true` и: `python3 -m engine.factory final ...`
 5. Другой формат: `--format long` (16:9, 1920×1080).
 
@@ -40,12 +42,16 @@ pip install -r requirements.txt      # + ffmpeg и ImageMagick в системе
 channels/<канал>/brand.yaml   шрифты, цвета, голос, размеры субтитров, звук, форматы
 engine/                       tts · align (субтитры) · visuals · audio · subs (ASS) · factory (CLI)
 fonts/                        Inter Display (OFL)
-projects/<канал>/<видео>/     scenes.yaml, storyboard.md; build/, output/, assets/ — вне git
+projects/<канал>/<видео>/     scenes.yaml; assets/README.md — список нужных кадров
+../yt-output/<канал>/<видео>/  ГОТОВЫЕ МАТЕРИАЛЫ отдельно от кода: storyboard.md, qa.md (в git),
+                              превью/финал MP4, PNG (не в git)
 ```
+
+Кадры: `assets/s01.mp4` … (номер = id сцены) подхватываются автоматически.
+Музыка: `assets/music.mp3`; без файла видео собирается без музыки.
 
 ## Известные ограничения
 
 - Без клипов в `assets/` фон — абстрактный градиент, это не «кинематографичные кадры».
-- Музыка по умолчанию — синтезированный эмбиент-заглушка. Для публикации укажите трек
-  в `audio.music` (например, из YouTube Audio Library).
+- Музыка по умолчанию выключена (`audio.music: off`); `synth` — синт-заглушка для тестов.
 - Piper звучит заметно синтетичнее платных голосов; качество нужно оценить на слух.

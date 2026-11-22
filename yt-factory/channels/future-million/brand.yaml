@@ -44,7 +44,7 @@ transitions:
   duration: 0.35
 
 audio:
-  music: null                  # путь к треку (YouTube Audio Library). null = встроенный синт-эмбиент
+  music: off                   # off = без музыки. Трек: положите assets/music.mp3 в проект (YouTube Audio Library). synth = заглушка
   music_db: -24                # громкость музыки под голосом
   duck_db: -8                  # дополнительное приглушение музыки во время речи
   sfx_db: -16

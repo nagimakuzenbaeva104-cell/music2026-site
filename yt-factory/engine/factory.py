@@ -3,6 +3,7 @@
   python3 -m engine.factory storyboard <проект>   озвучка + тайминг -> storyboard.md
   python3 -m engine.factory preview    <проект>   черновой рендер 540p + контактный лист
   python3 -m engine.factory check      <проект>   отчёт качества превью -> qa.md
+  python3 -m engine.factory layout     <проект>   пример расположения текста + зоны интерфейса Shorts
   python3 -m engine.factory final      <проект>   финальный MP4 (только если approved: true)
 
   --format short|long   переопределить формат проекта (9:16 / 16:9)
@@ -16,7 +17,9 @@ import tempfile
 from pathlib import Path
 
 from . import align, audio, qa, subs, tts, visuals
-from .common import FONTS, FactoryError, duration, load_project, run, write_wav
+from .common import (FONTS, FactoryError, deliverables_dir, duration, load_project,
+                     music_file, run, write_wav)
+from . import layout, shotlist
 
 TRANSITIONS = {"fade", "fadeblack", "dissolve", "smoothleft", "smoothright", "smoothup",
                "smoothdown", "slideleft", "slideup", "circleopen", "wipeleft", "zoomin"}
@@ -68,12 +71,23 @@ def merge_fast(chunks, speech_end, sb):
             for a in cand:
                 merged = chunks[a]["words"] + chunks[a + 1]["words"]
                 if len(" ".join(w["w"] for w in merged)) <= limit:
-                    chunks[a] = {"words": merged, "start": chunks[a]["start"]}
+                    chunks[a] = {"words": merged, "start": chunks[a]["start"],
+                                 "wstarts": chunks[a]["wstarts"] + chunks[a + 1]["wstarts"]}
                     del chunks[a + 1]
                     changed = True
                     break
             if changed:
                 break
+    # служебное слово в конце экрана («in», «a», «the», «в») переносим на следующий экран
+    weak = {"the", "and", "but", "for", "of", "to", "at", "on", "in", "an", "a", "with", "by",
+            "и", "в", "на", "с", "к", "по", "о", "а", "но"}
+    for j in range(len(chunks) - 1):
+        last = chunks[j]["words"][-1]["w"]
+        if len(chunks[j]["words"]) > 1 and last.lower() in weak:
+            chunks[j + 1]["words"].insert(0, chunks[j]["words"].pop())
+            moved_t = chunks[j]["wstarts"].pop()
+            chunks[j + 1]["wstarts"].insert(0, moved_t)
+            chunks[j + 1]["start"] = moved_t      # экран начинается вместе с перенесённым словом
     return chunks
 
 
@@ -92,9 +106,9 @@ def build_timeline(project_dir, proj, brand, fmt):
         slot = speech + pad
         out_chunks, k = [], 0
         for ch in chunks:
-            st = t + starts[k]
+            ws = [round(t + x, 3) for x in starts[k:k + len(ch)]]
             k += len(ch)
-            out_chunks.append({"words": ch, "start": round(st, 3)})
+            out_chunks.append({"words": ch, "start": ws[0], "wstarts": ws})
         out_chunks = merge_fast(out_chunks, t + speech + 0.2, sb)
         for j, ch in enumerate(out_chunks):
             nxt = out_chunks[j + 1]["start"] if j + 1 < len(out_chunks) else t + speech + 0.2
@@ -123,12 +137,13 @@ def build_timeline(project_dir, proj, brand, fmt):
             "target": proj.get("target_seconds"), "scenes": scenes, "sfx": sfx}
 
 
-def write_storyboard(project_dir, proj, brand, tl):
+def write_storyboard(project_dir, proj, brand, tl, out_dir, music):
     lines = [f"# Раскадровка: {proj.get('title')}", "",
              f"- Канал: **{brand['name']}** · формат **{tl['format']}** · голос `{brand['voice']['model']}`",
              f"- Длительность: **{tl['total']:.1f} с**" +
              (f" (цель {tl['target']} с)" if tl.get("target") else ""),
              f"- Ключевые слова: цвет `{brand['colors']['accent']}` · шрифт {brand['font']['family']}",
+             f"- Музыка: {('`' + Path(music).name + '`') if music and music != 'synth' else ('синт-заглушка' if music else 'нет (положите assets/music.mp3)')}",
              f"- Статус: {'✅ одобрено' if proj.get('approved') else '⏳ ждёт подтверждения «ДА»'}", ""]
     tgt = tl.get("target")
     if tgt and abs(tl["total"] - tgt) > 2:
@@ -139,7 +154,8 @@ def write_storyboard(project_dir, proj, brand, tl):
         subs_txt = " / ".join(
             " ".join(f"**{w['w']}**" if w["key"] else w["w"] for w in ch["words"])
             for ch in s["chunks"])
-        snd = "whoosh на входе" if s["id"] != tl["scenes"][0]["id"] else "старт музыки"
+        snd = "whoosh на входе" if s["id"] != tl["scenes"][0]["id"] else (
+            "старт музыки" if music else "без музыки")
         if any(w["key"] for ch in s["chunks"] for w in ch["words"]):
             snd += " · мягкий удар на ключевых словах"
         lines += [
@@ -152,25 +168,23 @@ def write_storyboard(project_dir, proj, brand, tl):
             f"- **Субтитры:** {subs_txt}  ",
             f"  _(жирным = цвет {brand['colors']['accent']}; привязка: {s['align']})_",
             f"- **Переход:** {s['transition']}",
-            f"- **Звук:** {snd} · музыка приглушена под голос",
+            f"- **Звук:** {snd}" + (" · музыка приглушена под голос" if music else ""),
         ]
         if s.get("source"):
             lines.append(f"- **Источник факта:** {s['source']}")
         lines.append("")
     if proj.get("sources"):
         lines += ["## Источники", ""] + [f"- {x}" for x in proj["sources"]] + [""]
-    (project_dir / "storyboard.md").write_text("\n".join(lines), encoding="utf-8")
+    (out_dir / "storyboard.md").write_text("\n".join(lines), encoding="utf-8")
 
 
-def render(project_dir, proj, brand, tl, final):
+def render(project_dir, proj, brand, tl, final, out_dir, music):
     fmt = tl["format"]
     F = brand["formats"][fmt]
     W, H, fps = F["w"], F["h"], F["fps"]
     scale = 1 if final else 0.5
     w, h = int(W * scale) // 2 * 2, int(H * scale) // 2 * 2
     T = brand["transitions"]["duration"]
-    out_dir = project_dir / "output"
-    out_dir.mkdir(exist_ok=True)
     tmp = Path(tempfile.mkdtemp(prefix="ytf_"))
     try:
         clips = []
@@ -198,7 +212,8 @@ def render(project_dir, proj, brand, tl, final):
         fl.append(f"{last}ass={ass}:fontsdir={FONTS},fade=t=in:d=0.25,"
                   f"fade=t=out:st={total - 0.5:.3f}:d=0.5,format=yuv420p[v]")
         mix = audio.build_mix([s["wav"] for s in tl["scenes"]],
-                              [s["start"] for s in tl["scenes"]], total, tl["sfx"], brand)
+                              [s["start"] for s in tl["scenes"]], total, tl["sfx"], brand,
+                              music_path=music)
         write_wav(tmp / "mix.wav", mix)
         name = re.sub(r"[^\w-]+", "_", project_dir.name)
         out = out_dir / (f"{name}_{fmt}_final.mp4" if final else f"{name}_{fmt}_preview.mp4")
@@ -237,7 +252,7 @@ def contact_sheet(video, tl, out):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawTextHelpFormatter)
-    ap.add_argument("cmd", choices=["storyboard", "preview", "check", "final"])
+    ap.add_argument("cmd", choices=["storyboard", "preview", "check", "layout", "final"])
     ap.add_argument("project")
     ap.add_argument("--format", choices=["short", "long"])
     a = ap.parse_args(argv)
@@ -253,21 +268,27 @@ def main(argv=None):
         build.mkdir(exist_ok=True)
         (build / f"timeline_{fmt}.json").write_text(
             json.dumps(tl, ensure_ascii=False, indent=1), encoding="utf-8")
-        write_storyboard(project_dir, proj, brand, tl)
-        print(f"  раскадровка: {project_dir / 'storyboard.md'} · {tl['total']:.1f} с")
+        out_dir = deliverables_dir(project_dir, proj)
+        music = music_file(project_dir, brand)
+        write_storyboard(project_dir, proj, brand, tl, out_dir, music)
+        shotlist.write(project_dir, proj, brand, tl)
+        print(f"  раскадровка: {out_dir / 'storyboard.md'} · {tl['total']:.1f} с")
+        print(f"  список кадров: {project_dir / 'assets' / 'README.md'}")
         if a.cmd in ("preview", "final"):
-            out = render(project_dir, proj, brand, tl, final=a.cmd == "final")
+            out = render(project_dir, proj, brand, tl, a.cmd == "final", out_dir, music)
             print(f"✔ {out} ({duration(out):.1f} с)")
         if a.cmd == "check":
             name = re.sub(r"[^\w-]+", "_", project_dir.name)
-            video = project_dir / "output" / f"{name}_{fmt}_preview.mp4"
+            video = out_dir / f"{name}_{fmt}_preview.mp4"
             if not video.exists():
                 raise FactoryError("Сначала соберите превью: factory preview <проект>")
-            rep, intel, measured, bad, missing = qa.write_report(project_dir, tl, brand, video)
+            rep, intel, measured, bad, missing = qa.write_report(project_dir, tl, brand, video, out_dir)
             print(f"  озвучка: {intel:.0f}% слов распознано · синхронизация: "
                   f"{len(measured)} экранов измерено, {len(bad)} с расхождением > {qa.SYNC_OK} с · "
                   f"кадров нет в {len(missing)} сценах")
             print(f"✔ отчёт: {rep}")
+        if a.cmd == "layout":
+            print(f"✔ {layout.render(tl, brand, out_dir)}")
     except FactoryError as e:
         print(f"✖ {e}", file=sys.stderr)
         sys.exit(1)

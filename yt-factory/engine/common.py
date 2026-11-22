@@ -13,6 +13,28 @@ FONTS = ROOT / "fonts"
 CHANNELS = ROOT / "channels"
 CACHE = ROOT / ".cache"
 VOICES = ROOT / "voices"
+# Готовые материалы (превью, раскадровки, отчёты, MP4) — вне исходного кода.
+OUTPUT = ROOT.parent / "yt-output"
+
+
+def deliverables_dir(project_dir, proj):
+    d = OUTPUT / proj["channel"] / Path(project_dir).name
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+
+def music_file(project_dir, brand):
+    """assets/music.mp3 проекта важнее настройки бренда. off/null — без музыки."""
+    for ext in (".mp3", ".wav", ".m4a"):
+        f = Path(project_dir) / "assets" / f"music{ext}"
+        if f.exists():
+            return str(f)
+    m = brand["audio"].get("music")
+    if m in (None, False, "off"):
+        return None
+    if m == "synth":
+        return "synth"
+    return str(ROOT / m)
 SR = 48000
 
 

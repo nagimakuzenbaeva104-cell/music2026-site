@@ -65,6 +65,13 @@ def sync_report(video, tl, lang):
     loud = align.loudness_mask(voice, SR)
     snap = lambda t: align.snap_after_pause(t, loud)
 
+    def energy_ok(t):
+        """Субтитр стоит в паузе, и голос начинается не позже чем через 0.15 с."""
+        k = int(t * 100)
+        if k >= len(loud):
+            return False
+        return not loud[max(k - 5, 0):k].any() and loud[k:k + 16].any()
+
     starts, _, mask = align.word_starts(words, video, tl["total"], lang, ww=ww, with_mask=True)
     out = []
     for wi, ch in chunk_first:
@@ -75,6 +82,10 @@ def sync_report(video, tl, lang):
             delta = snap(starts[wi]) - ch["start"]
         else:
             delta = None
+        if delta is not None and abs(delta) > SYNC_OK and energy_ok(ch["start"]):
+            k = int(ch["start"] * 100)
+            onset = next(j for j in range(k, k + 16) if loud[j]) / 100
+            delta = onset - ch["start"]          # громкость подтверждает: Whisper ошибся
         out.append((txt, ch["start"], delta, dur, cps))
     return out
 
@@ -106,7 +117,7 @@ def visual_report(project_dir, tl, fmt_w, fmt_h):
     return rows
 
 
-def write_report(project_dir, tl, brand, video):
+def write_report(project_dir, tl, brand, video, out_dir):
     lang = brand.get("language", "ru")
     F = brand["formats"][tl["format"]]
     lines = [f"# Проверка качества: {tl['title']}", "",
@@ -127,8 +138,7 @@ def write_report(project_dir, tl, brand, video):
     measured = [d for _, _, d, _, _ in sync if d is not None]
     bad = [x for x in sync if x[2] is not None and abs(x[2]) > SYNC_OK]
     lines += ["## 2. Синхронизация субтитров", "",
-              f"Проверено экранов: {len(measured)} из {len(sync)} (остальные Whisper не узнал "
-              "в миксе с музыкой). "
+              f"Проверено экранов: {len(measured)} из {len(sync)}. "
               + (f"Среднее |расхождение|: **{sum(abs(d) for d in measured) / len(measured):.2f} с**, "
                  f"максимум {max(abs(d) for d in measured):.2f} с. " if measured else "")
               + f"Порог незаметности: {SYNC_OK} с.", "",
@@ -144,9 +154,9 @@ def write_report(project_dir, tl, brand, video):
                      f"{(st + d):.2f} | {d:+.2f} |" if d is not None else
                      f"| {txt}{flag} | {st:.2f} | — | — |")
         lines[-1] += f" {dur:.2f} | {cps:.0f} |"
-    lines += ["", "⚠️ — Whisper в миксе с музыкой услышал слово раньше/позже порога. Whisper "
-              "систематически ставит начало слова после паузы на хвост предыдущего, поэтому "
-              "⚠️ = «проверить на слух», а не доказанная ошибка. · 👁 — слишком быстро для чтения "
+    lines += ["", "«Звучит» = Whisper по готовой дорожке, уточнённый по громкости голоса "
+              "(Whisper ставит начало слова после паузы на хвост предыдущего). "
+              "⚠️ — расхождение не подтвердилось ни одним способом: проверить на слух. · 👁 — слишком быстро для чтения "
               f"(< {MIN_ON_SCREEN} с или > {MAX_CPS} симв/с)", ""]
 
     vis = visual_report(project_dir, tl, F["w"], F["h"])
@@ -166,6 +176,6 @@ def write_report(project_dir, tl, brand, video):
               "справа/слева (кнопки YouTube справа, подпись канала снизу ~25% кадра).",
               f"- Hero-слово: {brand['hero']['y'][tl['format']]:.0%} высоты, ширина ≤ 86% кадра.",
               ""]
-    out = Path(project_dir) / "qa.md"
+    out = Path(out_dir) / "qa.md"
     out.write_text("\n".join(lines), encoding="utf-8")
     return out, intel, measured, bad, missing

@@ -17,7 +17,7 @@ scenes:
     say: "In nineteen ninety-four, Jeff Bezos quit his job as a vice president on Wall Street."
     hero: "1994"
     visual: "Ночной Манхэттен, окна офисных башен"
-    asset_hint: "s01: manhattan night office"
+    asset_hint: "manhattan night office"
     transition: fade
     source: "D. E. Shaw & Co. — фирма с Уолл-стрит; Безос был вице-президентом (historyofinformation.com)"
 
@@ -25,7 +25,7 @@ scenes:
     text: "And started a company in a [garage] in Bellevue."
     hero: "GARAGE"
     visual: "Пригородный гараж, тёплый свет лампы"
-    asset_hint: "s02: suburban garage night light"
+    asset_hint: "suburban garage night light"
     transition: smoothleft
     source: "Основана 5 июля 1994, гараж в Белвью, штат Вашингтон (history.com)"
 
@@ -34,7 +34,7 @@ scenes:
     say: "At first it was called Cadabra. But a lawyer heard: cadaver. A corpse."   # двоеточие/точка = чёткая пауза (проверено Whisper)
     hero: "CADABRA"
     visual: "Старые документы о регистрации, печатная машинка"
-    asset_hint: "s03: old documents typewriter"
+    asset_hint: "old documents typewriter"
     transition: fadeblack
     source: "Cadabra, Inc.; юрист услышал «cadaver» (history.com)"
 
@@ -43,7 +43,7 @@ scenes:
     say: "The name was changed, and Amazon was born, an online bookstore."
     hero: "AMAZON"
     visual: "Стопки книг, картонные коробки"
-    asset_hint: "s04: stack of books cardboard boxes"
+    asset_hint: "stack of books cardboard boxes"
     transition: smoothup
     source: "Переименование через несколько месяцев; продажа книг онлайн (history.com)"
 
@@ -52,7 +52,7 @@ scenes:
     say: "In nineteen ninety-seven, Amazon went public at eighteen dollars a share."
     hero: "$18"
     visual: "Биржевое табло, бегущие котировки"
-    asset_hint: "s05: stock market ticker board"
+    asset_hint: "stock market ticker board"
     transition: fade
     source: "IPO 15 мая 1997, $18 за акцию, NASDAQ: AMZN (CNN Money, 15.05.1997)"
 
@@ -61,14 +61,14 @@ scenes:
     say: "After four stock splits, each of those shares became two hundred forty."
     hero: "×240"
     visual: "График роста (моушн-графика)"
-    asset_hint: "s06: rising chart animation"
+    asset_hint: "rising chart animation"
     transition: zoomin
     source: "4 сплита: 2:1 (1998), 3:1 (1999), 2:1 (1999), 20:1 (2022) = ×240 (The Motley Fool)"
 
   - id: 7
     text: "It all started in a [garage]."
     visual: "Возврат к гаражу, медленный отъезд камеры"
-    asset_hint: "s07: garage door closing"
+    asset_hint: "garage door closing"
     transition: fadeblack
 
 sources:
