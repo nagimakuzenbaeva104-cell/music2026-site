@@ -1,0 +1,12 @@
+# Медиа и кэш не храним в git
+.cache/
+**/build/
+**/output/
+**/assets/*.mp4
+**/assets/*.mov
+**/assets/*.mp3
+**/assets/*.wav
+**/assets/*.jpg
+**/assets/*.png
+voices/
+__pycache__/

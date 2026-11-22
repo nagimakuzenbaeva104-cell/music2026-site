@@ -1,0 +1,52 @@
+# Future Million: бизнес, миллиардеры, технологии. Документальный стиль.
+name: Future Million
+language: ru
+
+voice:
+  engine: piper
+  model: ru_RU-dmitri-medium   # самый разборчивый из 4 русских голосов Piper (тест Whisper)
+  length_scale: 0.88           # <1 быстрее, >1 медленнее
+  sentence_silence: 0.12
+  pad_after: 0.18              # пауза после каждой сцены, сек
+
+font:
+  file: InterDisplay-ExtraBold.otf   # аналог SF Pro Bold (OFL)
+  family: Inter Display ExtraBold
+  hero_file: InterDisplay-Black.otf
+  hero_family: Inter Display Black
+
+colors:
+  text: "#FFFFFF"
+  accent: "#FFD700"            # ключевые слова [в квадратных скобках]
+  outline: "#000000"
+  bg: ["#0A0F1C", "#1B2236", "#3A2E12", "#05070D"]   # тёмно-синий → бронза: «деньги»
+  hero: "#FFD700"
+
+subtitles:
+  max_words: 3                 # слов на экране одновременно
+  max_chars: 16
+  size: {short: 122, long: 84}
+  y: {short: 0.64, long: 0.80} # доля высоты кадра (центр строки). Shorts: выше UI YouTube
+  outline: 7
+  blur: 1.5
+
+hero:                          # крупная цифра/слово сцены на фоне (год, сумма)
+  size: {short: 360, long: 300}
+  y: {short: 0.38, long: 0.42}
+  alpha: 0.82                  # 0 = непрозрачно, 1 = прозрачно (ASS-логика); 0.82 ≈ 18% видимости
+  ghost: true
+
+transitions:
+  default: fade
+  duration: 0.35
+
+audio:
+  music: null                  # путь к треку (YouTube Audio Library). null = встроенный синт-эмбиент
+  music_db: -24                # громкость музыки под голосом
+  duck_db: -8                  # дополнительное приглушение музыки во время речи
+  sfx_db: -16
+  lufs: -14                    # норма громкости YouTube
+
+formats:
+  short: {w: 1080, h: 1920, fps: 30}
+  long:  {w: 1920, h: 1080, fps: 30}

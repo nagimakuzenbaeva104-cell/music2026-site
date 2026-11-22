@@ -1,0 +1,5 @@
+piper-tts          # бесплатная офлайн-озвучка
+faster-whisper     # выравнивание субтитров по озвучке
+pyyaml
+numpy
+pillow
