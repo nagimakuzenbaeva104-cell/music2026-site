@@ -129,7 +129,7 @@ Low angle medium shot: a 24-year-old Kazakh woman with long straight black hair 
 **Көрініс:** Алыстағы қалада жігіт шатырда тұрып, сол аспанға қарайды.
 
 ```
-Wide shot: a 27-year-old Kazakh man with short black hair slightly longer on top, neatly trimmed light stubble, kind dark eyes, slim athletic build, a simple steel wristwatch on his left wrist, wearing a dark navy wool coat over a black turtleneck stands alone on a rooftop of a distant grey city at dawn and looks up at the same pale sky, cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, soft overcast light, melancholic mood, fine film grain, 16:9, no text, no subtitles, no watermark
+Wide shot: a 27-year-old Kazakh man with short black hair slightly longer on top, neatly trimmed light stubble, kind dark eyes, slim athletic build, a simple steel wristwatch on his left wrist, wearing a dark navy wool coat over a black turtleneck stands alone on the flat concrete rooftop of an old Soviet-era apartment block with a low parapet and rusty TV antennas, overlooking a distant grey city at dawn and looks up at the same pale sky, cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, soft overcast light, melancholic mood, fine film grain, 16:9, no text, no subtitles, no watermark
 ```
 
 ## Қайырма 1
@@ -161,7 +161,7 @@ Wide shot from behind: a 24-year-old Kazakh woman with long straight black hair 
 **Көрініс:** Кафеде жігіт салфеткаға жазып, қызға жылжытады. Бірінші хат.
 
 ```
-Close-up from above of a wooden cafe table with two cups of tea: a young man's hand writes a few lines in pen on a paper napkin, folds it and slides it toward a young woman's hands, warm lamp light, rain on the window, cinematic 35mm film look, shallow depth of field, soft golden natural light, gentle lens flare, warm romantic color grade, fine film grain, 16:9, no text, no subtitles, no watermark
+Close-up from above of the wooden table in a small cosy cafe with a dark wooden table by a large rain-streaked window and warm hanging lamps with two cups of tea: a young man's hand writes a few lines in pen on a paper napkin, folds it and slides it toward a young woman's hands, warm lamp light, rain on the window, cinematic 35mm film look, shallow depth of field, soft golden natural light, gentle lens flare, warm romantic color grade, fine film grain, 16:9, no text, no subtitles, no watermark
 ```
 
 ### s16 · 1:02.30–1:05.80 · 3.5 с · warm
@@ -221,7 +221,7 @@ Top-down overhead shot: a 24-year-old Kazakh woman with long straight black hair
 **Көрініс:** Төбеде күн батарда маңдайлары түйіседі.
 
 ```
-Close-up near silhouette on a mountain hilltop at sunset: a 24-year-old Kazakh woman with long straight black hair parted in the middle reaching mid-back, almond-shaped warm brown eyes, straight dark eyebrows, soft oval face, natural makeup, small pearl stud earrings, wearing a cream midi dress with a thin light-beige knit cardigan and a 27-year-old Kazakh man with short black hair slightly longer on top, neatly trimmed light stubble, kind dark eyes, slim athletic build, a simple steel wristwatch on his left wrist, wearing a light grey-blue linen shirt with rolled sleeves and beige chinos touch foreheads with eyes closed, his hands on her face, hazy hills behind, cinematic 35mm film look, shallow depth of field, soft golden natural light, gentle lens flare, warm romantic color grade, fine film grain, 16:9, no text, no subtitles, no watermark
+Close-up near silhouette on a grassy mountain hilltop in the Tien Shan foothills with one large weathered grey rock and a wide view over layered hazy mountain ridges at sunset: a 24-year-old Kazakh woman with long straight black hair parted in the middle reaching mid-back, almond-shaped warm brown eyes, straight dark eyebrows, soft oval face, natural makeup, small pearl stud earrings, wearing a cream midi dress with a thin light-beige knit cardigan and a 27-year-old Kazakh man with short black hair slightly longer on top, neatly trimmed light stubble, kind dark eyes, slim athletic build, a simple steel wristwatch on his left wrist, wearing a light grey-blue linen shirt with rolled sleeves and beige chinos touch foreheads with eyes closed, his hands on her face, hazy hills behind, cinematic 35mm film look, shallow depth of field, soft golden natural light, gentle lens flare, warm romantic color grade, fine film grain, 16:9, no text, no subtitles, no watermark
 ```
 
 ## Аспаптық бөлім
@@ -243,7 +243,7 @@ Medium shot in a small old apartment room with a tall wooden window, heavy brown
 **Көрініс:** Жігіт вагон терезесінен алақанын әйнекке басады.
 
 ```
-Shot through a train window: a 27-year-old Kazakh man with short black hair slightly longer on top, neatly trimmed light stubble, kind dark eyes, slim athletic build, a simple steel wristwatch on his left wrist, wearing a dark navy wool coat over a black turtleneck sits inside the carriage and presses his palm against the glass, looking back at the platform with regret, cold reflections on the glass, cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, soft overcast light, melancholic mood, fine film grain, 16:9, no text, no subtitles, no watermark
+Shot through a train window: a 27-year-old Kazakh man with short black hair slightly longer on top, neatly trimmed light stubble, kind dark eyes, slim athletic build, a simple steel wristwatch on his left wrist, wearing a dark navy wool coat over a black turtleneck sits inside an old passenger train compartment with a wide window, worn dark-green seats and a small fold-down table and presses his palm against the glass, looking back at the platform with regret, cold reflections on the glass, cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, soft overcast light, melancholic mood, fine film grain, 16:9, no text, no subtitles, no watermark
 ```
 
 ### s24 · 1:30.40–1:34.70 · 4.3 с · cold
@@ -275,7 +275,7 @@ Close-up: a 24-year-old Kazakh woman with long straight black hair parted in the
 **Көрініс:** Алыстағы бөлме. Жігіт үстел шамымен хат жазады.
 
 ```
-Close-up: a 27-year-old Kazakh man with short black hair slightly longer on top, neatly trimmed light stubble, kind dark eyes, slim athletic build, a simple steel wristwatch on his left wrist, wearing a dark navy wool coat over a black turtleneck without his coat writes a letter by hand at a small desk under a single warm desk lamp in a bare rented room at night, rain on the dark window, cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, soft overcast light, melancholic mood, fine film grain, 16:9, no text, no subtitles, no watermark
+Close-up: a 27-year-old Kazakh man with short black hair slightly longer on top, neatly trimmed light stubble, kind dark eyes, slim athletic build, a simple steel wristwatch on his left wrist, wearing a dark navy wool coat over a black turtleneck without his coat writes a letter by hand at the desk in a bare small rented room with a narrow wooden desk, a single brass desk lamp, a metal bed frame and one dark window at night under the warm desk lamp, rain on the dark window, cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, soft overcast light, melancholic mood, fine film grain, 16:9, no text, no subtitles, no watermark
 ```
 
 ### s27 · 1:44.70–1:48.80 · 4.1 с · cold
@@ -337,7 +337,7 @@ Medium shot at night: a 24-year-old Kazakh woman with long straight black hair p
 **Көрініс:** Жігіт шатырда тұрып, сол айға қарайды.
 
 ```
-Wide shot at night: a 27-year-old Kazakh man with short black hair slightly longer on top, neatly trimmed light stubble, kind dark eyes, slim athletic build, a simple steel wristwatch on his left wrist, wearing a dark navy wool coat over a black turtleneck stands alone on a city rooftop looking up at the same full moon, distant city lights below, cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, soft overcast light, melancholic mood, fine film grain, 16:9, no text, no subtitles, no watermark
+Wide shot at night: a 27-year-old Kazakh man with short black hair slightly longer on top, neatly trimmed light stubble, kind dark eyes, slim athletic build, a simple steel wristwatch on his left wrist, wearing a dark navy wool coat over a black turtleneck stands alone on the flat concrete rooftop of an old Soviet-era apartment block with a low parapet and rusty TV antennas, overlooking a distant grey city looking up at the same full moon, distant city lights below, cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, soft overcast light, melancholic mood, fine film grain, 16:9, no text, no subtitles, no watermark
 ```
 
 ## Қайырма 2
@@ -359,7 +359,7 @@ Memory: a 24-year-old Kazakh woman with long straight black hair parted in the m
 **Көрініс:** Жігіт қыздың хатын оқып, шешім қабылдайды.
 
 ```
-Close-up: a 27-year-old Kazakh man with short black hair slightly longer on top, neatly trimmed light stubble, kind dark eyes, slim athletic build, a simple steel wristwatch on his left wrist, wearing a dark navy wool coat over a black turtleneck reads a handwritten letter under a desk lamp, his eyes fill with tears, then he looks up with sudden determination, cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, soft overcast light, melancholic mood, fine film grain, 16:9, no text, no subtitles, no watermark
+Close-up: a 27-year-old Kazakh man with short black hair slightly longer on top, neatly trimmed light stubble, kind dark eyes, slim athletic build, a simple steel wristwatch on his left wrist, wearing a dark navy wool coat over a black turtleneck reads a handwritten letter under the desk lamp in a bare small rented room with a narrow wooden desk, a single brass desk lamp, a metal bed frame and one dark window, his eyes fill with tears, then he looks up with sudden determination, cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, soft overcast light, melancholic mood, fine film grain, 16:9, no text, no subtitles, no watermark
 ```
 
 ### s35 · 2:18.00–2:21.30 · 3.3 с · dream
@@ -389,7 +389,7 @@ Close-up: a 27-year-old Kazakh man with short black hair slightly longer on top,
 **Көрініс:** Естелік: маңдайлары түйіседі.
 
 ```
-Memory: a 24-year-old Kazakh woman with long straight black hair parted in the middle reaching mid-back, almond-shaped warm brown eyes, straight dark eyebrows, soft oval face, natural makeup, small pearl stud earrings, wearing a cream midi dress with a thin light-beige knit cardigan and a 27-year-old Kazakh man with short black hair slightly longer on top, neatly trimmed light stubble, kind dark eyes, slim athletic build, a simple steel wristwatch on his left wrist, wearing a light grey-blue linen shirt with rolled sleeves and beige chinos touch foreheads with eyes closed on a hilltop at sunset, dreamlike memory, overexposed soft glow, hazy bloom, warm faded colors, slow motion, 35mm film grain, 16:9, no text, no subtitles, no watermark
+Memory: a 24-year-old Kazakh woman with long straight black hair parted in the middle reaching mid-back, almond-shaped warm brown eyes, straight dark eyebrows, soft oval face, natural makeup, small pearl stud earrings, wearing a cream midi dress with a thin light-beige knit cardigan and a 27-year-old Kazakh man with short black hair slightly longer on top, neatly trimmed light stubble, kind dark eyes, slim athletic build, a simple steel wristwatch on his left wrist, wearing a light grey-blue linen shirt with rolled sleeves and beige chinos touch foreheads with eyes closed on a grassy mountain hilltop in the Tien Shan foothills with one large weathered grey rock and a wide view over layered hazy mountain ridges at sunset, dreamlike memory, overexposed soft glow, hazy bloom, warm faded colors, slow motion, 35mm film grain, 16:9, no text, no subtitles, no watermark
 ```
 
 ### s38 · 2:28.50–2:31.70 · 3.2 с · warm
@@ -431,7 +431,7 @@ Aerial drone tracking shot alongside a passenger train speeding across the golde
 **Көрініс:** Поезда жігіт терезеге қарап, ескі салфетканы ұстап отыр.
 
 ```
-Close-up: a 27-year-old Kazakh man with short black hair slightly longer on top, neatly trimmed light stubble, kind dark eyes, slim athletic build, a simple steel wristwatch on his left wrist, wearing a faded denim jacket over a grey t-shirt and carrying a large dark hiking backpack sits by a train window holding an old folded paper napkin with handwriting, golden steppe passing outside, a hopeful nervous smile, cinematic 35mm film look, shallow depth of field, soft golden natural light, gentle lens flare, warm romantic color grade, fine film grain, 16:9, no text, no subtitles, no watermark
+Close-up: a 27-year-old Kazakh man with short black hair slightly longer on top, neatly trimmed light stubble, kind dark eyes, slim athletic build, a simple steel wristwatch on his left wrist, wearing a faded denim jacket over a grey t-shirt and carrying a large dark hiking backpack sits by the window of an old passenger train compartment with a wide window, worn dark-green seats and a small fold-down table holding an old folded paper napkin with handwriting, golden steppe passing outside, a hopeful nervous smile, cinematic 35mm film look, shallow depth of field, soft golden natural light, gentle lens flare, warm romantic color grade, fine film grain, 16:9, no text, no subtitles, no watermark
 ```
 
 ### s42 · 2:44.10–2:48.50 · 4.4 с · warm
@@ -545,7 +545,7 @@ Steadicam shot from behind: a 24-year-old Kazakh woman with long straight black 
 **Көрініс:** Таудағы төбеде таң атқанда мұрындары түйісіп құшақтасады.
 
 ```
-Close-up on a mountain hilltop at sunrise: a 24-year-old Kazakh woman with long straight black hair parted in the middle reaching mid-back, almond-shaped warm brown eyes, straight dark eyebrows, soft oval face, natural makeup, small pearl stud earrings, wearing a flowing white linen dress and a 27-year-old Kazakh man with short black hair slightly longer on top, neatly trimmed light stubble, kind dark eyes, slim athletic build, a simple steel wristwatch on his left wrist, wearing a faded denim jacket over a grey t-shirt and carrying a large dark hiking backpack hold each other's faces and touch noses, eyes closed, hazy mountains behind, cinematic 35mm film look, shallow depth of field, soft golden natural light, gentle lens flare, warm romantic color grade, fine film grain, 16:9, no text, no subtitles, no watermark
+Close-up on a grassy mountain hilltop in the Tien Shan foothills with one large weathered grey rock and a wide view over layered hazy mountain ridges at sunrise: a 24-year-old Kazakh woman with long straight black hair parted in the middle reaching mid-back, almond-shaped warm brown eyes, straight dark eyebrows, soft oval face, natural makeup, small pearl stud earrings, wearing a flowing white linen dress and a 27-year-old Kazakh man with short black hair slightly longer on top, neatly trimmed light stubble, kind dark eyes, slim athletic build, a simple steel wristwatch on his left wrist, wearing a faded denim jacket over a grey t-shirt and carrying a large dark hiking backpack hold each other's faces and touch noses, eyes closed, hazy mountains behind, cinematic 35mm film look, shallow depth of field, soft golden natural light, gentle lens flare, warm romantic color grade, fine film grain, 16:9, no text, no subtitles, no watermark
 ```
 
 ### s53 · 3:36.80–3:42.80 · 6.0 с · warm
