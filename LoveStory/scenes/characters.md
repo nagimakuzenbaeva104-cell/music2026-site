@@ -20,20 +20,10 @@
 Келбет сипаттамасы `tokens.json` ішінде бір жерде тұр. Өзгерткің келсе, тек сол файлды
 өзгерт, сонда барлық 54 промпт бірден жаңарады.
 
-### Кейіпкер парағының промпттары (сурет генераторына)
+### Референс промпттары
 
-Ару:
-```
-Character reference sheet of a 24-year-old Kazakh woman with long straight black hair, warm brown eyes, soft oval face, natural makeup. Four views on a plain light grey background: front close-up portrait, three-quarter view, side profile, full body standing. Wearing a cream midi dress with a thin light-beige knit cardigan. Soft even studio light, photorealistic, consistent face in all views, no text.
-```
-
-Диас:
-```
-Character reference sheet of a 27-year-old Kazakh man with short black hair, light stubble, kind dark eyes, slim athletic build. Four views on a plain light grey background: front close-up portrait, three-quarter view, side profile, full body standing. Wearing a light grey-blue linen shirt with rolled sleeves and beige chinos. Soft even studio light, photorealistic, consistent face in all views, no text.
-```
-
-Беті ұнаған нұсқаны тапқан соң, **сол суретті** референс етіп, B және C киімдерімен қайта жасат.
-Әр жолы "same person, same face" деп қос.
+Барлық промпт кезең-кезеңімен `scenes/reference-prompts.md` ішінде:
+бет → кейіпкер парағы → киім A/B/C → жұп тексерісі.
 
 ## Локациялар (5 ғана, әдейі)
 
