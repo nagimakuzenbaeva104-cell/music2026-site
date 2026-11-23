@@ -47,7 +47,7 @@ Medium shot: a 24-year-old Kazakh woman with long straight black hair parted in 
 **Көрініс:** Қыз терезе алдында хат оқып тұр, перделер самалмен қозғалады.
 
 ```
-Medium shot, slow dolly in: a 24-year-old Kazakh woman with long straight black hair parted in the middle reaching mid-back, almond-shaped warm brown eyes, straight dark eyebrows, soft oval face, natural makeup, small pearl stud earrings, wearing a long dark navy belted dress and a black wool coat stands by the tall window of a small old apartment room with a tall wooden window, heavy brown velvet curtains, sheer white tulle, faded floral wallpaper and a wide wooden windowsill reading a handwritten letter, the morning breeze moves the curtains around her, soft window light on her face, cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, soft overcast light, melancholic mood, fine film grain, 16:9, no text, no subtitles, no watermark
+Medium shot, slow dolly in: a 24-year-old Kazakh woman with long straight black hair parted in the middle reaching mid-back, almond-shaped warm brown eyes, straight dark eyebrows, soft oval face, natural makeup, small pearl stud earrings, wearing a long dark navy belted dress and a black wool coat stands by the tall window of a small old apartment room with a tall wooden window, heavy brown velvet curtains, sheer white tulle, faded floral wallpaper and a wide wooden windowsill reading a handwritten letter, the untied red ribbon and the rest of the letters lie on the windowsill beside her, the morning breeze moves the curtains around her, soft window light on her face, cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, soft overcast light, melancholic mood, fine film grain, 16:9, no text, no subtitles, no watermark
 ```
 
 ### s05 · 0:20.90–0:24.70 · 3.8 с · cold
@@ -57,7 +57,7 @@ Medium shot, slow dolly in: a 24-year-old Kazakh woman with long straight black 
 **Көрініс:** Конверттегі қолжазба есім, қыздың саусағы оны сипайды.
 
 ```
-Macro close-up of a woman's finger slowly tracing handwritten ink on an old paper envelope, soft window light, cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, soft overcast light, melancholic mood, fine film grain, 16:9, no text, no subtitles, no watermark
+Macro close-up of a woman's finger, the cuff of a black wool coat sleeve visible at her wrist, slowly tracing a handwritten name in blue ink on an old cream paper envelope, the handwriting softly out of focus, soft window light, cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, soft overcast light, melancholic mood, fine film grain, 16:9, no text, no subtitles, no watermark
 ```
 
 ### s06 · 0:24.70–0:28.40 · 3.7 с · cold
@@ -67,7 +67,7 @@ Macro close-up of a woman's finger slowly tracing handwritten ink on an old pape
 **Көрініс:** Хатты кеудесіне басып, көзін жұмады.
 
 ```
-Close-up of a 24-year-old Kazakh woman with long straight black hair parted in the middle reaching mid-back, almond-shaped warm brown eyes, straight dark eyebrows, soft oval face, natural makeup, small pearl stud earrings, wearing a long dark navy belted dress and a black wool coat pressing a handwritten letter to her chest with her eyes closed, window light, quiet longing, cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, soft overcast light, melancholic mood, fine film grain, 16:9, no text, no subtitles, no watermark
+Close-up of a 24-year-old Kazakh woman with long straight black hair parted in the middle reaching mid-back, almond-shaped warm brown eyes, straight dark eyebrows, soft oval face, natural makeup, small pearl stud earrings, wearing a long dark navy belted dress and a black wool coat still in her coat pressing a handwritten letter to her chest with her eyes closed, window light, quiet longing, cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, soft overcast light, melancholic mood, fine film grain, 16:9, no text, no subtitles, no watermark
 ```
 
 ### s07 · 0:28.40–0:32.00 · 3.6 с · cold
