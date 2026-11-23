@@ -32,10 +32,10 @@ Close-up of a bundle of old handwritten letters tied with a faded red ribbon lyi
 
 **Ән сөзі:** (фортепиано)  
 **Камера:** Орта план  
-**Көрініс:** Қыз бөлмеге кіріп, хаттар бумасын қолына алады.
+**Көрініс:** Қыз вокзалдан жаңа оралды, пальтосын шешпеген. Бөлмеге кіріп, хаттар бумасын қолына алады.
 
 ```
-Medium shot: a 24-year-old Kazakh woman with long straight black hair parted in the middle reaching mid-back, almond-shaped warm brown eyes, straight dark eyebrows, soft oval face, natural makeup, small pearl stud earrings, wearing a long dark navy belted dress and a black wool coat walks slowly into a small old apartment room with a tall wooden window, heavy brown velvet curtains, sheer white tulle, faded floral wallpaper and a wide wooden windowsill in soft morning light and picks up a bundle of old letters tied with a red ribbon from the windowsill, cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, soft overcast light, melancholic mood, fine film grain, 16:9, no text, no subtitles, no watermark
+Medium shot: a 24-year-old Kazakh woman with long straight black hair parted in the middle reaching mid-back, almond-shaped warm brown eyes, straight dark eyebrows, soft oval face, natural makeup, small pearl stud earrings, wearing a long dark navy belted dress and a black wool coat, who has just come back home from the railway station and has not taken off her coat yet, a few drops of morning mist on its shoulders, walks slowly into a small old apartment room with a tall wooden window, heavy brown velvet curtains, sheer white tulle, faded floral wallpaper and a wide wooden windowsill in soft morning light and picks up a bundle of old letters tied with a red ribbon from the windowsill, cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, soft overcast light, melancholic mood, fine film grain, 16:9, no text, no subtitles, no watermark
 ```
 
 ## 1-шумақ

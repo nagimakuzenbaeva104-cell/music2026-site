@@ -63,24 +63,29 @@ Static locked-off camera, no camera movement. The sheer tulle curtain behind the
 
 ## s03 · 0:10–0:14.5 · cold · Орта план
 
-**Хикаядағы орны:** Ару бірінші рет кадрға кіреді. Көрермен оның бетін осы кадрдан
-есте сақтайды, сондықтан **бет референске 100% сай келуі керек.**
+**Хикаядағы орны:** Ару бірінші рет кадрға кіреді. Ол вокзалдан жаңа оралды: таң сайын
+сонда барып, оны күтеді де, бос қайтады. Сондықтан пальтосын әлі шешпеген, иығында таң
+тұманының тамшылары бар. Көрермен оның бетін осы кадрдан есте сақтайды, сондықтан
+**бет референске 100% сай келуі керек.**
+
+Пальто осы жерде көрерменге бір рет түсіндіріледі. s04, s06 оған сүйенеді, ал s07 (бос
+перрон) енді «ол қайдан келді» деген сұрақтың жауабы болып оқылады.
 
 **Референс:** `images/characters/her_B.png` + `images/locations/ROOM_cold.png` +
 `images/props/letters.png`
 
 **1. Бастапқы кадр:**
 ```
-Medium shot in the same room as in the reference image, same window, same curtains, same wallpaper. The same woman as in the character reference, same face, same hairstyle parted in the middle, same pearl stud earrings, wearing a long dark navy belted dress and a black wool coat. She has just stepped into the room and stands two steps from the window, looking at the bundle of letters with the red ribbon lying on the windowsill. Her face is in soft three-quarter view, calm, tired, quietly longing. Early overcast morning, cold pale window light. Cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, fine film grain, 16:9, no text, no watermark.
+Medium shot in the same room as in the reference image, same window, same curtains, same wallpaper. The same woman as in the character reference, same face, same hairstyle parted in the middle, same pearl stud earrings, wearing a long dark navy belted dress and a black wool coat. She has just come back home from the railway station and has not taken off her coat yet, a few tiny drops of morning mist on its shoulders, a strand of hair slightly windblown. She stands in the doorway of the room, two steps from the window, looking at the bundle of letters with the red ribbon lying on the windowsill. Her face is in soft three-quarter view, tired, a little cold, quietly longing. Early overcast morning, cold pale window light. Cinematic 35mm film look, shallow depth of field, muted cold blue-grey color grade, fine film grain, 16:9, no text, no watermark.
 ```
 
 **2. Видео:**
 ```
-Static camera, very slight slow push in. The woman walks slowly to the window, reaches out and gently picks up the bundle of letters with both hands, holds it close and looks down at it. Slow, calm, natural movement, her face stays consistent. Soft cold morning light, the tulle curtain moves gently. Cinematic 35mm film look, shallow depth of field, muted cold blue-grey grade, fine film grain.
+Static camera, very slight slow push in. The woman, still in her coat as if she has just come in from outside, walks slowly to the window, reaches out and gently picks up the bundle of letters with both hands, holds it close and looks down at it. Slow, calm, natural movement, her face stays consistent. Soft cold morning light, the tulle curtain moves gently. Cinematic 35mm film look, shallow depth of field, muted cold blue-grey grade, fine film grain.
 ```
 
 **Қате кетуі мүмкін жерлер:** бет кадрдың ортасына қарай басқа адамға айналады; қолы
-(саусақтары) бұрмаланады; бума қолға алынғанда «екіге бөлінеді». Бет 1-секундтан
+(саусақтары) бұрмаланады; бума қолға алынғанда «екіге бөлінеді»; пальто кадр ортасында жоғалып, көйлекке айналады. Бет 1-секундтан
 кейін өзгерсе, ол видеоны алма: кадрдың ең маңызды бөлігі осы.
 
 ---
