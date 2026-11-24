@@ -1,7 +1,7 @@
 # How Elon Musk Built His Billion-Dollar Empire — YouTube Video Package
 
 Format: faceless documentary, English voiceover
-Target length: 11–13 minutes (~1,750 words of narration at ~145 wpm)
+Target length: ~10–11 minutes (~1,460 words of narration at ~145 wpm)
 Audience: business / entrepreneurship / motivation viewers, 18–40, US/UK/IN/CA
 
 ---
