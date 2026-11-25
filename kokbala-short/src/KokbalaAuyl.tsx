@@ -35,7 +35,7 @@ const Yurt: React.FC<{ x: number; s: number }> = ({ x, s }) => (
   </g>
 );
 
-const Village: React.FC<{ dist: number }> = ({ dist }) => {
+export const Village: React.FC<{ dist: number }> = ({ dist }) => {
   const far = -(dist * 0.35) % 1400;
   const near = -(dist * 1.0) % 120;
   return (

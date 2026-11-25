@@ -7,6 +7,8 @@ import { KokbalaBlueBus } from "./KokbalaBlueBus";
 import { DURATION3 } from "./timeline3";
 import { KokbalaAuyl } from "./KokbalaAuyl";
 import { DURATION4 } from "./timeline4";
+import { KokbalaTus } from "./KokbalaTus";
+import { DURATION5 } from "./timeline5";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -39,6 +41,14 @@ export const RemotionRoot: React.FC = () => {
       id="KokbalaAuyl"
       component={KokbalaAuyl}
       durationInFrames={Math.round(DURATION4 * 30)}
+      fps={30}
+      width={1080}
+      height={1920}
+    />
+    <Composition
+      id="KokbalaTus"
+      component={KokbalaTus}
+      durationInFrames={Math.round(DURATION5 * 30)}
       fps={30}
       width={1080}
       height={1920}
