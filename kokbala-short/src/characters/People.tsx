@@ -96,7 +96,7 @@ export const Baby: React.FC<{ state: "cry" | "calm" | "sleep"; t: number }> = ({
 );
 
 /** Young mother holding the baby. shush=true raises a finger to her lips. */
-export const Mother: React.FC<{ baby: "cry" | "calm" | "sleep"; shush?: boolean; t: number }> = ({ baby, shush, t }) => (
+export const Mother: React.FC<{ baby: "cry" | "calm" | "sleep"; shush?: boolean; t: number; withBaby?: boolean }> = ({ baby, shush, t, withBaby = true }) => (
   <g>
     <path d="M-48 100 q 0 -64 48 -64 q 48 0 48 64 z" fill={C.mint} />
     <path d="M-48 100 q 0 -50 30 -60 l10 60 z M48 100 q 0 -50 -30 -60 l-10 60 z" fill={C.yellow} />
@@ -106,9 +106,11 @@ export const Mother: React.FC<{ baby: "cry" | "calm" | "sleep"; shush?: boolean;
     <Eyes y={4} gap={13} />
     <Cheeks y={16} dx={23} />
     {shush ? <ellipse cx={0} cy={20} rx={5} ry={4} fill="#C0504D" /> : <Smile y={17} w={9} />}
-    <g transform="translate(0 70) scale(0.95)">
-      <Baby state={baby} t={t} />
-    </g>
+    {withBaby && (
+      <g transform="translate(0 70) scale(0.95)">
+        <Baby state={baby} t={t} />
+      </g>
+    )}
     {shush && (
       <g>
         {/* arm from the right shoulder up to the lips, beside the baby */}
@@ -177,4 +179,23 @@ export const Heart: React.FC<{ x: number; y: number; s: number; o: number }> = (
     strokeWidth={2}
     opacity={o}
   />
+);
+
+/** Gives a bust character (head at 0,0, body to y≈100) a lower body and legs so it can stand. */
+export const Standing: React.FC<{ color: string; legColor?: string; walk?: number; children: React.ReactNode }> = ({
+  color,
+  legColor = "#3A3A55",
+  walk = 0,
+  children,
+}) => (
+  <g>
+    {[-1, 1].map((s) => (
+      <g key={s} transform={`translate(${s * 18} 160) rotate(${s * Math.sin(walk) * 18})`}>
+        <rect x={-9} y={0} width={18} height={52} rx={8} fill={legColor} />
+        <ellipse cx={4} cy={54} rx={15} ry={8} fill="#5A3A22" />
+      </g>
+    ))}
+    <path d="M-50 92 h100 l8 74 h-116 z" fill={color} stroke={C.ink} strokeWidth={3} />
+    {children}
+  </g>
 );
